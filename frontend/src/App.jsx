@@ -175,7 +175,14 @@ function AppContent() {
     window.history.replaceState({}, '', '/');
   };
 
-  if (isLoading) return null;
+  if (isLoading) {
+    return (
+      <main className="startup-state" role="status" aria-live="polite">
+        <h1>Friend Hub</h1>
+        <p>Starting your session…</p>
+      </main>
+    );
+  }
   if (!isAuthenticated) {
     if (inviteMatch) {
       return <JoinPage inviteCode={decodeURIComponent(inviteMatch[1])} onExpired={leaveJoinRoute} />;

@@ -6,6 +6,29 @@ import App from './App.jsx';
 // onboarding tour and install banner can offer a working install button.
 import './pwa/install.js';
 
+class StartupErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { error: null };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { error };
+  }
+
+  render() {
+    if (this.state.error) {
+      return (
+        <main className="startup-state" role="alert">
+          <h1>Friend Hub could not start</h1>
+          <p>Refresh the page and try again. If this continues, please let us know.</p>
+        </main>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 // Register the workbox-generated service worker (autoUpdate strategy is
 // configured in vite.config.js). Runs in dev too — vite-plugin-pwa's
 // devOptions:{enabled:true} makes that safe — so push subscription works
@@ -19,5 +42,5 @@ import('virtual:pwa-register').then(async ({ registerSW }) => {
 }).catch(() => { /* no-op when PWA plugin is unavailable */ });
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <App />
+  <StartupErrorBoundary><App /></StartupErrorBoundary>
 );

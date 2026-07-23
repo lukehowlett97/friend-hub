@@ -65,6 +65,25 @@ select:focus-visible {
   min-height: 100dvh;
 }
 
+.startup-state {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: grid;
+  place-content: center;
+  gap: 0.5rem;
+  padding: 2rem;
+  text-align: center;
+  color: var(--color-text, #172033);
+}
+
+.startup-state h1 {
+  font-size: 1.8rem;
+}
+
+.startup-state p {
+  color: var(--color-muted-text, #5b6878);
+}
+
 .dashboard-button {
   border: 1px solid var(--color-border);
   text-align: left;
