@@ -63,6 +63,11 @@ class Settings(BaseSettings):
     # No trailing slash. Override via APP_BASE_URL in production.
     app_base_url: str = "http://localhost:5173"
 
+    demo_guest_retention_hours: int = 24
+    demo_simulation_interval_seconds: int = 90
+    demo_guest_message_rate_limit: int = 8
+    demo_guest_message_max_length: int = 500
+
     # AI API
     ai_api_key: str | None = None
     ai_api_provider: str = "openrouter"

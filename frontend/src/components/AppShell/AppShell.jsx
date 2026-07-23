@@ -4,6 +4,7 @@ import NotificationBell from '../Notifications/NotificationBell.jsx';
 import UserAvatar from '../Chat/UserAvatar.jsx';
 import RoomSwitcher from './RoomSwitcher.jsx';
 import { useAuth } from '../../auth/AuthProvider.jsx';
+import { isDemoMode } from '../../api/client.js';
 
 const mainNavItems = [
   { path: '/home',  label: 'Home'  },
@@ -27,6 +28,7 @@ const itemRoutes = ['/items', '/ideas', '/polls', '/events', '/calendar', '/remi
 
 function SidebarProfile({ currentPath, onNavigate }) {
   const { user } = useAuth();
+  const demoMode = isDemoMode() || user?.is_guest;
   if (!user) return null;
   const isActive = currentPath.startsWith('/profile');
   return (
@@ -88,19 +90,19 @@ const AppShell = ({ currentPath, onNavigate, onSearch, children }) => {
           Friend Hub
         </a>
 
-        <RoomSwitcher />
+        {!demoMode && <RoomSwitcher />}
 
-        <button
+        {!demoMode && <button
           type="button"
           className="sidebar-search-input sidebar-search-shortcut"
           onClick={() => onNavigate('/search')}
           aria-label="Go to search"
         >
           Search…
-        </button>
+        </button>}
 
         <nav className="app-nav">
-          {mainNavItems.map((item) => (
+          {(demoMode ? [{ path: '/chat', label: 'Demo chat' }] : mainNavItems).map((item) => (
             <a
               key={item.path}
               className={`app-nav-link ${isActivePath(item.path) ? 'active' : ''}`}
@@ -111,13 +113,13 @@ const AppShell = ({ currentPath, onNavigate, onSearch, children }) => {
               {item.label}
             </a>
           ))}
-          <button
+          {!demoMode && <button
             type="button"
             className={`app-nav-link app-nav-more-btn ${isMoreActive || moreOpen ? 'active' : ''}`}
             onClick={handleMoreClick}
           >
             More
-          </button>
+          </button>}
           {moreOpen && (
             <div className="app-nav-more-items" onClick={e => e.stopPropagation()}>
               {moreNavItems.map((item) => (
@@ -136,6 +138,7 @@ const AppShell = ({ currentPath, onNavigate, onSearch, children }) => {
         </nav>
 
         <div className="app-sidebar-footer">
+          {demoMode && <div className="demo-session-notice">You’re chatting as {user.nickname}. This temporary demo session does not create an account.</div>}
           <SidebarProfile currentPath={currentPath} onNavigate={onNavigate} />
           <NotificationBell onNavigate={onNavigate} />
         </div>
@@ -144,7 +147,7 @@ const AppShell = ({ currentPath, onNavigate, onSearch, children }) => {
       <main className={`app-main${isChatRoute ? ' app-main--chat' : ''}`}>{children}</main>
 
       <nav className="mobile-bottom-nav" aria-label="Mobile primary navigation">
-        {mainNavItems.map((item) => (
+        {(demoMode ? [{ path: '/chat', label: 'Demo chat' }] : mainNavItems).map((item) => (
           <a
             key={item.path}
             className={`mobile-nav-link ${isActivePath(item.path) ? 'active' : ''}`}
@@ -155,14 +158,14 @@ const AppShell = ({ currentPath, onNavigate, onSearch, children }) => {
             {item.mobileLabel || item.label}
           </a>
         ))}
-        <button
+        {!demoMode && <button
           type="button"
           className={`mobile-nav-link mobile-nav-more-btn ${isMoreActive || moreOpen ? 'active' : ''}`}
           onClick={handleMoreClick}
         >
           More
-        </button>
-        {user && (
+        </button>}
+        {user && !demoMode && (
           <button
             type="button"
             className={`mobile-nav-profile-btn${currentPath.startsWith('/profile') ? ' active' : ''}`}

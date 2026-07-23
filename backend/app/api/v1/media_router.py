@@ -96,6 +96,8 @@ async def _require_room_member_for_file(
     Files with no room_id (e.g. legacy imports) are accessible to any
     authenticated user — they pre-date multi-room and have no isolation context.
     """
+    if getattr(user, "user_type", None) == "guest" and room_id is None:
+        raise HTTPException(status_code=404)
     if room_id is None:
         return
     repo = RoomRepository(db)

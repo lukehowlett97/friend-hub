@@ -9,8 +9,9 @@ from app.config import get_settings
 from app.domains.auth.repository import AuthRepository
 from app.domains.auth.tokens import generate_invite_code, generate_session_token, hash_secret, hash_session_token, verify_secret
 from app.models.message import User, UserRole
-from app.models.room import Room, RoomMembership
+from app.models.room import Room, RoomMembership, RoomMemberRole
 from app.models.user_session import UserSession
+import random
 
 
 class AuthService:
@@ -20,6 +21,9 @@ class AuthService:
     LOCK_MINUTES = 10
     GENERIC_LOGIN_ERROR = "Login failed. Check your details and try again."
     PLATFORM_OWNER_USERNAME = "techlett"
+    DEMO_SESSION_HOURS = 2
+    DEMO_ADJECTIVES = ("Amber", "Blue", "Bright", "Calm", "Clever", "Coral", "Cosmic", "Daring", "Golden", "Happy", "Indigo", "Jolly", "Lucky", "Misty", "Neon", "Quiet", "Silver", "Sunny")
+    DEMO_ANIMALS = ("Fox", "Otter", "Panda", "Raven", "Robin", "Seal", "Sparrow", "Tiger", "Wolf", "Wren")
 
     def __init__(self, db: AsyncSession):
         self.repository = AuthRepository(db)
@@ -61,6 +65,56 @@ class AuthService:
             user_agent=user_agent,
             ip_address=ip_address,
         )
+        return user, raw_token, None
+
+    async def create_demo_guest(
+        self,
+        *,
+        user_agent: str | None = None,
+        ip_address: str | None = None,
+    ) -> tuple[Optional[User], Optional[str], Optional[str]]:
+        """Create a short-lived, room-limited visitor session for the demo."""
+        room = (await self.repository.db.execute(
+            select(Room).where(Room.slug == "demo", Room.status == "active")
+        )).scalar_one_or_none()
+        if not room:
+            return None, None, "Demo room is not configured"
+
+        now = datetime.utcnow()
+        nickname = f"{random.choice(self.DEMO_ADJECTIVES)} {random.choice(self.DEMO_ANIMALS)}"
+        user = User(
+            username=None,
+            nickname=nickname,
+            display_name=nickname,
+            role=UserRole.member,
+            user_type="guest",
+            is_test_user=True,
+            joined_at=now,
+            last_seen=now,
+            last_seen_at=now,
+            created_at=now,
+            updated_at=now,
+        )
+        self.repository.db.add(user)
+        await self.repository.db.flush()
+
+        raw_token = generate_session_token()
+        session = UserSession(
+            user_id=user.id,
+            token_hash=hash_session_token(raw_token),
+            expires_at=now + timedelta(hours=self.DEMO_SESSION_HOURS),
+            last_used_at=now,
+            user_agent=user_agent,
+            ip_address=ip_address,
+        )
+        self.repository.db.add(session)
+        self.repository.db.add(RoomMembership(
+            room_id=room.id,
+            user_id=user.id,
+            role=RoomMemberRole.member.value,
+        ))
+        await self.repository.db.commit()
+        await self.repository.db.refresh(user)
         return user, raw_token, None
 
     async def authenticate_token(self, token: str | None) -> tuple[Optional[User], Optional[UserSession]]:
@@ -383,6 +437,7 @@ def user_payload(user: User) -> dict:
         "is_admin": role in {"owner", "admin"},
         "is_owner": role == "owner",
         "avatar_url": getattr(user, "avatar_url", None),
+        "is_guest": getattr(user, "user_type", "human") == "guest",
     }
 
 

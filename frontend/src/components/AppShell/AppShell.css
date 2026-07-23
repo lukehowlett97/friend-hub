@@ -153,6 +153,16 @@
   flex-shrink: 0;
 }
 
+.demo-session-notice {
+  margin: 0 0 0.75rem;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  border-radius: 0.6rem;
+  color: var(--muted-text, #64748b);
+  font-size: 0.72rem;
+  line-height: 1.35;
+}
+
 .sidebar-profile-btn {
   flex: 1;
   display: flex;

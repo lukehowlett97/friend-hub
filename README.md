@@ -42,12 +42,16 @@ repository.
 
 ```bash
 make up
+make migrate-file FILE=061_add_public_demo_room.sql
 make backend
 make frontend
 ```
 
 The API runs on `http://localhost:8000` and the Vite development server runs
 on `http://localhost:5173`.
+
+Open `http://localhost:5173/demo` to try the public demo room. It creates a
+temporary display name and does not create an account.
 
 Useful commands:
 

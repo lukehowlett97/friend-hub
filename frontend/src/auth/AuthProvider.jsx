@@ -1,6 +1,6 @@
 import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
-import { claimInvite as apiClaimInvite, fetchMe, logoutApi, pinLogin as apiPinLogin, register as apiRegister } from '../api/auth.js';
-import { apiFetch, getCurrentRoomSlug, setCurrentRoomSlug, clearCurrentRoomSlug } from '../api/client.js';
+import { claimInvite as apiClaimInvite, createDemoSession, fetchMe, logoutApi, pinLogin as apiPinLogin, register as apiRegister } from '../api/auth.js';
+import { apiFetch, getCurrentRoomSlug, setCurrentRoomSlug, clearCurrentRoomSlug, clearDemoSession, isDemoMode } from '../api/client.js';
 
 const AuthContext = createContext(null);
 
@@ -28,6 +28,10 @@ async function autoSelectRoom() {
 
 function readCachedUser() {
   try {
+    if (isDemoMode()) {
+      const rawDemo = window.sessionStorage.getItem(USER_CACHE_KEY);
+      return rawDemo ? JSON.parse(rawDemo) : null;
+    }
     const raw = localStorage.getItem(USER_CACHE_KEY);
     return raw ? JSON.parse(raw) : null;
   } catch {
@@ -37,8 +41,9 @@ function readCachedUser() {
 
 function writeCachedUser(user) {
   try {
-    if (user) localStorage.setItem(USER_CACHE_KEY, JSON.stringify(user));
-    else localStorage.removeItem(USER_CACHE_KEY);
+    const storage = isDemoMode() ? window.sessionStorage : localStorage;
+    if (user) storage.setItem(USER_CACHE_KEY, JSON.stringify(user));
+    else storage.removeItem(USER_CACHE_KEY);
   } catch { /* storage quota */ }
 }
 
@@ -54,10 +59,15 @@ export function AuthProvider({ children }) {
   }, []);
 
   useEffect(() => {
-    fetchMe()
+    const demoPath = window.location.pathname === '/demo';
+    const authRequest = demoPath && !isDemoMode() ? createDemoSession() : fetchMe();
+    authRequest
       .then(async u => {
         updateUser(u);
-        if (u) await autoSelectRoom();
+        if (u) {
+          if (u.is_guest) setCurrentRoomSlug('demo');
+          else await autoSelectRoom();
+        }
       })
       .catch(() => {
         // Network error — keep cached user, WS will re-verify when server is back.
@@ -89,6 +99,7 @@ export function AuthProvider({ children }) {
   const logout = async () => {
     await logoutApi();
     clearCurrentRoomSlug();
+    clearDemoSession();
     updateUser(null);
   };
 

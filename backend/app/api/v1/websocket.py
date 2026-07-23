@@ -31,13 +31,13 @@ _rate_limit_buckets: dict[str, deque] = defaultdict(deque)
 _RATE_LIMIT_EXEMPT = {"typing", "stop_typing", "ping"}
 
 
-def _is_rate_limited(conn_id: str) -> bool:
+def _is_rate_limited(conn_id: str, limit: int | None = None) -> bool:
     now = time.monotonic()
     bucket = _rate_limit_buckets[conn_id]
     window = settings.ws_rate_limit_window_seconds
     while bucket and bucket[0] < now - window:
         bucket.popleft()
-    if len(bucket) >= settings.ws_rate_limit_messages:
+    if len(bucket) >= (limit or settings.ws_rate_limit_messages):
         return True
     bucket.append(now)
     return False
@@ -87,16 +87,17 @@ async def websocket_endpoint(websocket: WebSocket, manager: ConnectionManager):
 
         # Send the current online roster.
         await websocket.send_json(
-            OutgoingOnlineUsers(users=manager.get_online_users()).dict()
+            OutgoingOnlineUsers(users=manager.get_online_users(room.id)).dict()
         )
 
         # Announce to others only on first connection (not on new tab).
         if is_new_user:
-            await manager.broadcast_except_user(
+            await manager.broadcast_to_room_except_user(
+                room.id,
                 OutgoingUserJoined(session_id=user_sid, nickname=user.nickname).dict(),
                 user_sid,
             )
-            await manager.broadcast(OutgoingOnlineUsers(users=manager.get_online_users()).dict())
+            await manager.broadcast_to_room(room.id, OutgoingOnlineUsers(users=manager.get_online_users(room.id)).dict())
 
         while True:
             raw = await websocket.receive_text()
@@ -112,7 +113,8 @@ async def websocket_endpoint(websocket: WebSocket, manager: ConnectionManager):
                 continue
 
             msg_type = data.get("type", "")
-            if msg_type not in _RATE_LIMIT_EXEMPT and _is_rate_limited(conn_id):
+            guest_limit = settings.demo_guest_message_rate_limit if getattr(user, "user_type", None) == "guest" else None
+            if msg_type not in _RATE_LIMIT_EXEMPT and _is_rate_limited(conn_id, guest_limit):
                 await websocket.send_json(OutgoingError(error="Rate limit exceeded, slow down").dict())
                 continue
 
@@ -132,6 +134,7 @@ async def websocket_endpoint(websocket: WebSocket, manager: ConnectionManager):
 
 
 async def _handle_disconnect(conn_id: str, manager: ConnectionManager):
+    room = manager.get_room(conn_id)
     user, is_last = manager.disconnect(conn_id)
     _cleanup_rate_limit(conn_id)
 
@@ -149,9 +152,13 @@ async def _handle_disconnect(conn_id: str, manager: ConnectionManager):
         except Exception as e:
             logger.error("Error updating last_seen: %s", e)
 
-        await manager.broadcast(
+        if room is None:
+            return
+        await manager.broadcast_to_room(
+            room.id,
             OutgoingUserDisconnected(session_id=user_sid, nickname=user.nickname).dict()
         )
-        await manager.broadcast(
-            OutgoingOnlineUsers(users=manager.get_online_users()).dict()
+        await manager.broadcast_to_room(
+            room.id,
+            OutgoingOnlineUsers(users=manager.get_online_users(room.id)).dict()
         )

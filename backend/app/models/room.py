@@ -65,4 +65,8 @@ class RoomSettings(Base):
     allow_invites = Column(Boolean, nullable=False, default=True, server_default="true")
     max_members = Column(Integer, nullable=True)
     notice = Column(Text, nullable=True)
+    access_mode = Column(String(24), nullable=False, default="private", server_default="private")
+    allow_guest_messages = Column(Boolean, nullable=False, default=False, server_default="false")
+    simulation_enabled = Column(Boolean, nullable=False, default=False, server_default="false")
+    guest_message_max_length = Column(Integer, nullable=False, default=500, server_default="500")
     updated_at = Column(DateTime, nullable=False, default=datetime.utcnow, onupdate=datetime.utcnow, server_default="NOW()")

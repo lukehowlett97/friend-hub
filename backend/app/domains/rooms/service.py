@@ -1,9 +1,11 @@
 from typing import Optional
 from uuid import UUID
 
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.domains.rooms.repository import RoomRepository
+from app.models.message import User
 from app.models.room import Room, RoomMembership
 
 
@@ -32,6 +34,11 @@ class RoomService:
         Returns (room, error_message).  One of the two is always None.
         """
         if slug:
+            user = (await self.repository.db.execute(
+                select(User).where(User.id == user_id)
+            )).scalar_one_or_none()
+            if getattr(user, "user_type", None) == "guest" and slug != "demo":
+                return None, "Guest sessions are restricted to the demo room"
             room = await self.repository.get_room_by_slug(slug)
             if not room:
                 return None, "Room not found"

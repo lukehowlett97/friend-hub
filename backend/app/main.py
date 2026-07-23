@@ -74,6 +74,9 @@ async def lifespan(app: FastAPI):
     from app.domains.ai.daily_summary_scheduler import run_daily_summary_scheduler
     daily_summary_task = asyncio.create_task(run_daily_summary_scheduler())
 
+    from app.domains.demo.service import run_demo_scheduler
+    demo_scheduler_task = asyncio.create_task(run_demo_scheduler(connection_manager))
+
     # One-off: link imported photos to their messages (no-op once backfilled)
     backfill_task = asyncio.create_task(_backfill_photo_message_links())
 
@@ -81,7 +84,7 @@ async def lifespan(app: FastAPI):
 
     # Shutdown
     logger.info("Shutting down...")
-    for task in (scheduler_task, daily_summary_task, backfill_task):
+    for task in (scheduler_task, daily_summary_task, demo_scheduler_task, backfill_task):
         task.cancel()
         try:
             await task

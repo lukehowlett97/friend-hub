@@ -1,4 +1,16 @@
-import { apiFetch, setToken, clearToken } from './client.js';
+import { apiFetch, setToken, setDemoToken, clearToken } from './client.js';
+
+export async function createDemoSession() {
+  const res = await fetch('/api/v1/auth/demo-session', {
+    method: 'POST',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.detail || 'Demo is unavailable');
+  setDemoToken(data.token);
+  return data.user;
+}
 
 export async function register({ username, nickname, invite_code }) {
   const res = await apiFetch('/api/v1/auth/register', {

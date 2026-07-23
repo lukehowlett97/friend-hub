@@ -37,6 +37,7 @@ const routes = new Set(['/home', '/items', '/ideas', '/polls', '/events', '/cale
 function normalizePath(pathname) {
   pathname = pathname.split('?')[0];
   if (pathname === '/') return '/home';
+  if (pathname === '/demo') return '/chat';
   if (/^\/events\/\d+$/.test(pathname)) return pathname;
   if (/^\/notes\/\d+$/.test(pathname)) return pathname;
   if (/^\/profile(?:\/[^/]+)?$/.test(pathname)) return pathname;
@@ -168,6 +169,7 @@ function AuthenticatedApp() {
 function AppContent() {
   const { isLoading, isAuthenticated } = useAuth();
   const inviteMatch = window.location.pathname.match(/^\/join\/([^/]+)$/);
+  const demoPath = window.location.pathname === '/demo';
 
   const leaveJoinRoute = () => {
     window.history.replaceState({}, '', '/');

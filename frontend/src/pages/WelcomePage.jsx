@@ -65,6 +65,9 @@ export default function WelcomePage() {
 
         {mode === 'choice' && (
           <div className="auth-choice-actions">
+            <button type="button" className="secondary-auth-button" onClick={() => { window.location.href = '/demo'; }}>
+              Try the public demo
+            </button>
             <button type="button" className="register-button" onClick={() => setMode('invite')}>
               I have an invite code
             </button>

@@ -19,6 +19,8 @@ from .events import (
 )
 from .connection_manager import ConnectionManager
 from app.services.chat_service import ChatService
+from app.models.message import Message
+from app.config import get_settings
 
 logger = logging.getLogger(__name__)
 
@@ -80,13 +82,17 @@ class WebSocketMessageHandler:
         reply_to_id = data.get("reply_to_id")
         if not content:
             return None
+        max_length = get_settings().demo_guest_message_max_length if getattr(user, "user_type", None) == "guest" else 2000
+        if len(content.encode("utf-8")) > max_length:
+            return OutgoingError(error=f"Message too large (max {max_length} bytes)").dict()
 
         chat_service = ChatService(db)
         message, nickname, reply_to = await chat_service.save_message(
             user_sid, content, reply_to_id=reply_to_id, user_id=user.id, room_id=room_id,
         )
 
-        await self.connection_manager.broadcast(
+        await self.connection_manager.broadcast_to_room(
+            room_id,
             OutgoingChatMessage(
                 session_id=user_sid,
                 nickname=nickname,
@@ -135,7 +141,8 @@ class WebSocketMessageHandler:
     async def _handle_typing(self, data, conn_id, db):
         user = self._get_user(conn_id)
         user_sid = str(user.session_id)
-        await self.connection_manager.broadcast_except_user(
+        await self.connection_manager.broadcast_to_room_except_user(
+            self._get_room_id(conn_id),
             OutgoingTypingIndicator(
                 session_id=user_sid,
                 nickname=user.nickname,
@@ -147,7 +154,8 @@ class WebSocketMessageHandler:
     async def _handle_stop_typing(self, data, conn_id, db):
         user = self._get_user(conn_id)
         user_sid = str(user.session_id)
-        await self.connection_manager.broadcast_except_user(
+        await self.connection_manager.broadcast_to_room_except_user(
+            self._get_room_id(conn_id),
             OutgoingTypingIndicator(
                 session_id=user_sid,
                 nickname=user.nickname,
@@ -184,10 +192,15 @@ class WebSocketMessageHandler:
         if not message_id or not emoji:
             return OutgoingError(error="Missing message_id or emoji").dict()
 
+        target = await db.get(Message, message_id)
+        if not target or target.room_id != self._get_room_id(conn_id):
+            return OutgoingError(error="Message not found in this room").dict()
+
         chat_service = ChatService(db)
         reactions = await chat_service.toggle_reaction(message_id, user_sid, emoji, user_id=user.id)
 
-        await self.connection_manager.broadcast(
+        await self.connection_manager.broadcast_to_room(
+            self._get_room_id(conn_id),
             OutgoingReactionUpdated(message_id=message_id, reactions=reactions).dict()
         )
         logger.info("Reaction toggled on message %d by user %s", message_id, user_sid)
@@ -202,11 +215,16 @@ class WebSocketMessageHandler:
         if not message_id:
             return OutgoingError(error="message_id required").dict()
 
+        target = await db.get(Message, message_id)
+        if not target or target.room_id != self._get_room_id(conn_id):
+            return OutgoingError(error="Message not found in this room").dict()
+
         chat_service = ChatService(db)
         if not await chat_service.delete_message(message_id, user_sid):
             return OutgoingError(error="Cannot delete this message").dict()
 
-        await self.connection_manager.broadcast(
+        await self.connection_manager.broadcast_to_room(
+            self._get_room_id(conn_id),
             OutgoingMessageDeleted(message_id=message_id, session_id=user_sid).dict()
         )
         logger.info("Message %d soft-deleted by user %s", message_id, user_sid)
@@ -225,12 +243,17 @@ class WebSocketMessageHandler:
         if len(new_content) > 1000:
             return OutgoingError(error="Message too long (max 1000 chars)").dict()
 
+        target = await db.get(Message, message_id)
+        if not target or target.room_id != self._get_room_id(conn_id):
+            return OutgoingError(error="Message not found in this room").dict()
+
         chat_service = ChatService(db)
         message = await chat_service.edit_message(message_id, user_sid, new_content)
         if not message:
             return OutgoingError(error="Cannot edit this message").dict()
 
-        await self.connection_manager.broadcast(
+        await self.connection_manager.broadcast_to_room(
+            self._get_room_id(conn_id),
             OutgoingMessageEdited(
                 message_id=message_id,
                 content=new_content,

@@ -23,6 +23,13 @@ from sqlalchemy import select
 router = APIRouter(prefix="/api/v1/ai", tags=["ai"])
 
 
+async def _demo_safe_user(authorization, db):
+    user = await _current_user_or_401(authorization, db)
+    if getattr(user, "user_type", None) == "guest":
+        raise HTTPException(status_code=403, detail="AI features are unavailable in the public demo")
+    return user
+
+
 # ── Request/Response Models ───────────────────────────────────────────────────
 
 
@@ -233,7 +240,7 @@ async def summarise_chat(
     
     Requires authentication.
     """
-    user = await _current_user_or_401(authorization, db)
+    user = await _demo_safe_user(authorization, db)
 
     from app.domains.ai.summary_service import create_llm_client
     llm_client = create_llm_client()
@@ -270,7 +277,7 @@ async def get_memories(
     
     Requires authentication.
     """
-    user = await _current_user_or_401(authorization, db)
+    user = await _demo_safe_user(authorization, db)
     
     repo = AIMemoryRepository(db)
     memories = await repo.list_recent(
@@ -302,7 +309,7 @@ async def get_suggestions(
     
     Requires authentication.
     """
-    user = await _current_user_or_401(authorization, db)
+    user = await _demo_safe_user(authorization, db)
     
     repo = AISuggestionRepository(db)
     
@@ -337,7 +344,7 @@ async def accept_suggestion(
     
     Requires authentication.
     """
-    user = await _current_user_or_401(authorization, db)
+    user = await _demo_safe_user(authorization, db)
     
     # Parse suggestion ID
     try:
@@ -445,7 +452,7 @@ async def reject_suggestion(
     
     Requires authentication.
     """
-    user = await _current_user_or_401(authorization, db)
+    user = await _demo_safe_user(authorization, db)
     
     # Parse suggestion ID
     try:
@@ -495,7 +502,7 @@ async def list_agent_runs(
     
     Requires authentication.
     """
-    user = await _current_user_or_401(authorization, db)
+    user = await _demo_safe_user(authorization, db)
     
     repo = AgentRunRepository(db)
     runs = await repo.list_recent(
@@ -524,7 +531,7 @@ async def get_agent_run(
     
     Requires authentication.
     """
-    user = await _current_user_or_401(authorization, db)
+    user = await _demo_safe_user(authorization, db)
     
     try:
         run_uuid = uuid.UUID(run_id)
@@ -566,7 +573,7 @@ async def hub_bot_chat(
     logger = logging.getLogger(__name__)
     
     try:
-        user = await _current_user_or_401(authorization, db)
+        user = await _demo_safe_user(authorization, db)
         group = await _get_default_group(db)
 
         from app.domains.ai.hub_agent_service import SharedHubBotService
@@ -653,7 +660,7 @@ async def get_usage(
     db: AsyncSession = Depends(get_db_session),
 ):
     """Recent AI usage events. Owner only."""
-    user = await _current_user_or_401(authorization, db)
+    user = await _demo_safe_user(authorization, db)
     if not _is_owner_user(user):
         raise HTTPException(status_code=403, detail="Owner only")
 

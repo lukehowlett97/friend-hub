@@ -227,6 +227,7 @@ class AuthUserResponse(BaseModel):
     is_admin: bool = False
     is_owner: bool = False
     avatar_url: str | None = None
+    is_guest: bool = False
 
 class AvatarUploadRequest(BaseModel):
     data_url: str
@@ -547,12 +548,12 @@ async def _authenticate_request(
     return None, None
 
 
-def _set_auth_cookie(response: Response, token: str) -> None:
+def _set_auth_cookie(response: Response, token: str, *, session_only: bool = False) -> None:
     settings = get_settings()
     response.set_cookie(
         AUTH_COOKIE_NAME,
         token,
-        max_age=60 * 60 * 24 * AuthService.SESSION_DAYS,
+        **({} if session_only else {"max_age": 60 * 60 * 24 * AuthService.SESSION_DAYS}),
         httponly=True,
         secure=not settings.debug,
         samesite="lax",
@@ -562,6 +563,11 @@ def _set_auth_cookie(response: Response, token: str) -> None:
 
 def _clear_auth_cookie(response: Response) -> None:
     response.delete_cookie(AUTH_COOKIE_NAME, path="/", httponly=True, samesite="lax")
+
+
+def _ensure_not_demo_guest(user: User) -> None:
+    if getattr(user, "user_type", None) == "guest":
+        raise HTTPException(status_code=403, detail="This feature is unavailable in the public demo")
 
 
 # Dependency to get connection manager
@@ -1462,6 +1468,29 @@ async def register_user(
     raise HTTPException(status_code=403, detail="Public signup is disabled")
 
 
+@router.post("/auth/demo-session", response_model=AuthResponse)
+async def create_demo_session(
+    http_request: Request,
+    response: Response,
+    db: AsyncSession = Depends(get_db_session),
+):
+    """Create a temporary guest identity restricted to the public demo room."""
+    from app.domains.demo.service import allow_demo_session_request
+
+    ip_address = http_request.client.host if http_request.client else "unknown"
+    if not allow_demo_session_request(ip_address):
+        raise HTTPException(status_code=429, detail="Demo session limit reached. Please try again later.")
+
+    user, token, error = await AuthService(db).create_demo_guest(
+        user_agent=http_request.headers.get("user-agent"),
+        ip_address=ip_address,
+    )
+    if error or not user or not token:
+        raise HTTPException(status_code=503, detail=error or "Demo is unavailable")
+    _set_auth_cookie(response, token, session_only=True)
+    return AuthResponse(user=AuthUserResponse(**user_payload(user)), token=token)
+
+
 @router.post("/auth/claim-invite", response_model=AuthResponse)
 async def claim_invite(
     request: ClaimInviteRequest,
@@ -2065,6 +2094,7 @@ async def _set_message_pinned(
 ):
     """Pin/unpin a chat message. Admins and owners only."""
     user = await _current_user_or_401(authorization, db, session_cookie)
+    _ensure_not_demo_guest(user)
     if not _is_admin_user(user):
         raise HTTPException(status_code=403, detail="Only admins can pin messages")
     room_id = await _request_room_id(
@@ -2179,8 +2209,13 @@ async def get_members(
     db: AsyncSession = Depends(get_db_session),
     manager: ConnectionManager = Depends(get_connection_manager),
     x_room_slug: str | None = Header(default=None, alias="X-Room-Slug"),
+    authorization: str | None = Header(default=None),
+    session_cookie: str | None = Cookie(default=None, alias=AUTH_COOKIE_NAME),
 ):
     """Get group members with roles and live online status, optionally filtered by room."""
+    user = await _current_user_or_401(authorization, db, session_cookie)
+    if getattr(user, "user_type", None) == "guest" and x_room_slug not in (None, "demo"):
+        raise HTTPException(status_code=403, detail="Guest sessions are restricted to the demo room")
     room_id = None
     if x_room_slug:
         from sqlalchemy import select as _select
@@ -2192,7 +2227,7 @@ async def get_members(
     unlinked_imported_members = await member_service.get_unlinked_imported_members(room_id=room_id)
 
     if manager is not None:
-        live_sids = {u["session_id"] for u in manager.get_online_users()}
+        live_sids = {u["session_id"] for u in manager.get_online_users(room_id)}
         for member in members:
             member["is_online"] = member["session_id"] in live_sids
 
@@ -3549,6 +3584,8 @@ async def _request_room_id(
         from app.domains.rooms.service import RoomService
 
         user = await _current_user_or_401(authorization, db, session_cookie)
+        if getattr(user, "user_type", None) == "guest" and x_room_slug not in (None, "demo"):
+            raise HTTPException(status_code=403, detail="Guest sessions are restricted to the demo room")
         room, error = await RoomService(db).resolve_room(slug=x_room_slug, user_id=user.id)
         if error:
             if "not found" in error or "not a member" in error:
@@ -6292,6 +6329,7 @@ async def upload_photo(
 ):
     settings = get_settings()
     user = await _current_user_or_401(authorization, db, session_cookie)
+    _ensure_not_demo_guest(user)
     if request.content_type and not request.content_type.startswith("image/"):
         raise HTTPException(status_code=400, detail="Only image uploads are supported")
 
@@ -6875,6 +6913,12 @@ async def list_rooms(
     from app.domains.rooms.service import RoomService
 
     user = await _current_user_or_401(authorization, db, session_cookie)
+    if getattr(user, "user_type", None) == "guest":
+        from app.domains.rooms.repository import RoomRepository
+        demo = await RoomRepository(db).get_room_by_slug("demo")
+        membership = await RoomRepository(db).get_membership(demo.id, user.id) if demo else None
+        from app.domains.rooms.service import _room_payload
+        return {"rooms": [_room_payload(demo, membership)]} if demo and membership else {"rooms": []}
     service = RoomService(db)
     rooms = await service.get_rooms_for_user(user.id)
     return {"rooms": rooms}
@@ -7121,6 +7165,7 @@ async def upload_video(
     )
 
     user = await _current_user_or_401(authorization, db, session_cookie)
+    _ensure_not_demo_guest(user)
     room_id = await _request_room_id(db, authorization=authorization, session_cookie=session_cookie, x_room_slug=x_room_slug)
 
     ct = (request.content_type or "").lower()

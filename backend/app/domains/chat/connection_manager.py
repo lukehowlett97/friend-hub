@@ -83,14 +83,34 @@ class ConnectionManager:
     def get_room(self, conn_id: str) -> Optional[object]:
         return self.connection_rooms.get(conn_id)
 
+    def has_room_connections_by_slug(self, slug: str) -> bool:
+        return any(
+            getattr(room, "slug", None) == slug
+            for room in self.connection_rooms.values()
+        )
+
+    async def broadcast_to_room_except_user(self, room_id, message: dict, user_session_id: str):
+        excluded = self.user_connections.get(user_session_id, set())
+        tasks = [
+            self._safe_send(cid, ws, message)
+            for cid, ws in list(self.active_connections.items())
+            if cid not in excluded
+            and str(getattr(self.connection_rooms.get(cid), "id", "")) == str(room_id)
+        ]
+        if tasks:
+            await asyncio.gather(*tasks, return_exceptions=True)
+
     def get_nickname(self, conn_id: str) -> Optional[str]:
         user = self.connection_users.get(conn_id)
         return user.nickname if user else None
 
-    def get_online_users(self) -> List[dict]:
-        """Return one entry per unique authenticated user."""
+    def get_online_users(self, room_id=None) -> List[dict]:
+        """Return one entry per unique authenticated user, optionally by room."""
         seen: Dict[str, dict] = {}
-        for user in self.connection_users.values():
+        for conn_id, user in self.connection_users.items():
+            room = self.connection_rooms.get(conn_id)
+            if room_id is not None and (room is None or str(room.id) != str(room_id)):
+                continue
             sid = str(user.session_id)
             if sid not in seen:
                 seen[sid] = {"session_id": sid, "nickname": user.nickname}
