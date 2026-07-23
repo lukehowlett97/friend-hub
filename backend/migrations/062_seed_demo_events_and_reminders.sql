@@ -14,10 +14,10 @@ BEGIN
     SELECT id INTO group_key FROM groups ORDER BY id LIMIT 1;
 
     event_key := NULL;
-    INSERT INTO events (group_id, room_id, title, description, location, starts_at, created_by_session_id)
+    INSERT INTO events (group_id, room_id, title, description, location, starts_at, created_by_session_id, created_at)
     SELECT group_key, demo_room, '[Demo] Community Picnic',
            'A sample event showing how shared plans appear in Friend Hub.',
-           'Riverside Park', now() + interval '2 days', demo_session
+           'Riverside Park', now() + interval '2 days', demo_session, now()
     WHERE NOT EXISTS (
         SELECT 1 FROM events WHERE room_id = demo_room AND title = '[Demo] Community Picnic'
     )
@@ -39,10 +39,10 @@ BEGIN
     );
 
     event_key := NULL;
-    INSERT INTO events (group_id, room_id, title, description, location, starts_at, created_by_session_id)
+    INSERT INTO events (group_id, room_id, title, description, location, starts_at, created_by_session_id, created_at)
     SELECT group_key, demo_room, '[Demo] Game Night',
            'Bring a favourite game and meet the demo room visitors.',
-           'Friend Hub Lounge', now() + interval '5 days', demo_session
+           'Friend Hub Lounge', now() + interval '5 days', demo_session, now()
     WHERE NOT EXISTS (
         SELECT 1 FROM events WHERE room_id = demo_room AND title = '[Demo] Game Night'
     )
@@ -64,10 +64,10 @@ BEGIN
     );
 
     event_key := NULL;
-    INSERT INTO events (group_id, room_id, title, description, location, starts_at, created_by_session_id)
+    INSERT INTO events (group_id, room_id, title, description, location, starts_at, created_by_session_id, created_at)
     SELECT group_key, demo_room, '[Demo] Photo Walk',
            'A sample event for trying RSVPs and shared planning.',
-           'Old Town Market', now() + interval '9 days', demo_session
+           'Old Town Market', now() + interval '9 days', demo_session, now()
     WHERE NOT EXISTS (
         SELECT 1 FROM events WHERE room_id = demo_room AND title = '[Demo] Photo Walk'
     )
