@@ -1,0 +1,25 @@
+# Chat embeddings worker — embeds new messages/memories/hub items continuously.
+# Install:
+#   sudo cp deploy/systemd/friendhub-chat-embeddings.service /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now friendhub-chat-embeddings
+# Logs: journalctl -u friendhub-chat-embeddings -f
+
+[Unit]
+Description=Friend Hub chat embeddings worker
+After=network-online.target postgresql.service ollama.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=spaceman
+WorkingDirectory=/home/spaceman/code/projects/friend-hub/backend
+# Env is read from backend/app/.env by the app's settings loader; the
+# Environment lines below only need to override when .env differs.
+Environment=AI_ENABLE_CHAT_EMBEDDINGS=true
+ExecStart=/home/spaceman/code/projects/friend-hub/backend/.venv/bin/python -m app.domains.chat_embeddings.worker --sleep-seconds 30
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

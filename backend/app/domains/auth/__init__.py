@@ -1,0 +1,1 @@
+"""Persistent user authentication domain."""

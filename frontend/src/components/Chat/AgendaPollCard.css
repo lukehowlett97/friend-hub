@@ -1,0 +1,220 @@
+.agenda-poll-card {
+  --card-bg: #ffffff;
+  --card-border: #e1e6ee;
+  --accent: #4361ee;
+  --accent-soft: #e9eefe;
+  --muted: #5a6478;
+  --danger: #c1402c;
+
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 14px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 360px;
+  font-size: 0.9rem;
+  color: #1f2533;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.agenda-poll-card.loading {
+  align-items: center;
+  justify-content: center;
+  min-height: 60px;
+  color: var(--muted);
+  font-style: italic;
+}
+
+.agenda-poll-card.compact {
+  padding: 10px 12px;
+  font-size: 0.86rem;
+  max-width: 320px;
+}
+
+.agenda-poll-card.status-live {
+  border-color: #b9d2ff;
+  box-shadow: 0 1px 2px rgba(67, 97, 238, 0.18);
+}
+.agenda-poll-card.status-scheduled {
+  border-color: #ead8a8;
+  background: #fff9eb;
+}
+.agenda-poll-card.status-closed,
+.agenda-poll-card.status-cancelled {
+  border-color: #d3d8e1;
+  background: #f6f7fb;
+}
+
+.agenda-poll-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.agenda-poll-card-eyebrow {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.agenda-poll-card-badge {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  letter-spacing: 0.04em;
+}
+.agenda-poll-card-badge.badge-scheduled { background: #fbe8b0; color: #6b4a00; }
+.agenda-poll-card-badge.badge-live      { background: #d8e5ff; color: #1a3aab; animation: agenda-pulse 1.6s ease-in-out infinite; }
+.agenda-poll-card-badge.badge-closed,
+.agenda-poll-card-badge.badge-cancelled { background: #e1e6ee; color: #3a4254; }
+
+@keyframes agenda-pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.65; }
+}
+
+.agenda-poll-card-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.25;
+  color: #1a2030;
+}
+
+.agenda-poll-card-target {
+  font-size: 0.84rem;
+  color: var(--muted);
+}
+
+.agenda-poll-card-timing {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+.agenda-poll-card-timing .dot { color: #b8becc; }
+
+.agenda-poll-card-countdown {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #1a3aab;
+  color: #fff;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.agenda-poll-card-options {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.agenda-poll-option {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 12px;
+  border: 1px solid #d8dde7;
+  border-radius: 10px;
+  background: #fff;
+  overflow: hidden;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+  transition: border-color 120ms ease, background 120ms ease, transform 120ms ease;
+}
+.agenda-poll-option:hover:not(.disabled) {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.agenda-poll-option:active:not(.disabled) { transform: scale(0.99); }
+.agenda-poll-option.selected {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.agenda-poll-option.disabled {
+  cursor: not-allowed;
+  opacity: 0.85;
+}
+
+.agenda-poll-option-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: rgba(67, 97, 238, 0.12);
+  z-index: 0;
+  transition: width 200ms ease;
+}
+.agenda-poll-card.status-closed .agenda-poll-option-fill,
+.agenda-poll-card.status-cancelled .agenda-poll-option-fill {
+  background: rgba(58, 66, 84, 0.12);
+}
+
+.agenda-poll-option-label,
+.agenda-poll-option-count { position: relative; z-index: 1; }
+
+.agenda-poll-option-label {
+  font-weight: 500;
+}
+
+.agenda-poll-option-count {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.agenda-poll-card-result {
+  background: #eef6ec;
+  border: 1px solid #c7e3c1;
+  color: #29602a;
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 0.85rem;
+}
+
+.agenda-poll-card-hint {
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.agenda-poll-card-error {
+  color: var(--danger);
+  font-size: 0.82rem;
+}
+
+.agenda-poll-card-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.agenda-poll-card-link {
+  background: none;
+  border: none;
+  color: var(--accent);
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 4px 6px;
+}
+.agenda-poll-card-link:hover { text-decoration: underline; }
+
+/* Inside chat bubble, drop heavy shadow + tighten */
+.message .agenda-poll-card {
+  margin-top: 6px;
+  box-shadow: none;
+  max-width: 320px;
+}

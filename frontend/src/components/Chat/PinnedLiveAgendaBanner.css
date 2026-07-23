@@ -1,0 +1,173 @@
+.pinned-agenda-banner {
+  margin: 4px 8px 0;
+  border: 1px solid #b9d2ff;
+  background: linear-gradient(180deg, #eef3ff, #f8faff);
+  border-radius: 12px;
+  padding: 6px 10px;
+  box-shadow: 0 1px 2px rgba(67, 97, 238, 0.08);
+  font-size: 0.88rem;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.pinned-agenda-banner:hover {
+  border-color: #7da7ff;
+  box-shadow: 0 4px 14px rgba(67, 97, 238, 0.14);
+}
+
+.pinned-agenda-banner-summary {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto auto;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 4px 0;
+  text-align: left;
+  color: #1a2030;
+}
+
+.pinned-agenda-banner-pin,
+.pinned-agenda-banner-main,
+.pinned-agenda-banner-toggle {
+  border: none;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+}
+
+.pinned-agenda-banner-pin {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  color: #dc2626;
+  background: rgba(220, 38, 38, 0.1);
+  font-size: 1rem;
+}
+
+.pinned-agenda-banner-pin:hover {
+  background: rgba(220, 38, 38, 0.16);
+}
+
+.pinned-agenda-banner-main {
+  min-width: 0;
+  padding: 0;
+  text-align: left;
+}
+
+.pinned-agenda-banner-main:hover .pinned-agenda-banner-title {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.pinned-agenda-banner-title {
+  display: block;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pinned-agenda-banner-countdown {
+  background: #1a3aab;
+  color: #fff;
+  font-size: 0.74rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  letter-spacing: 0.02em;
+}
+
+.pinned-agenda-banner-count {
+  background: #d8e5ff;
+  color: #1a3aab;
+  font-size: 0.74rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+.pinned-agenda-banner-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  color: #5a6478;
+  font-size: 0.85rem;
+}
+
+.pinned-agenda-banner-toggle:hover {
+  background: rgba(67, 97, 238, 0.1);
+  color: #1a3aab;
+}
+
+.pinned-agenda-banner-quick {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 4px;
+}
+
+.pinned-agenda-banner-vote {
+  background: #4361ee;
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 4px 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.pinned-agenda-banner-vote:hover { background: #2a44c8; }
+.pinned-agenda-banner-vote:active { transform: scale(0.98); }
+
+.pinned-agenda-banner-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 6px;
+}
+
+.pinned-agenda-banner-more {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  color: #5a6478;
+}
+
+.pinned-agenda-banner-link {
+  background: none;
+  border: none;
+  color: #4361ee;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.82rem;
+  padding: 2px 6px;
+}
+.pinned-agenda-banner-link:hover { text-decoration: underline; }
+
+@media (max-width: 600px) {
+  .pinned-agenda-banner {
+    margin: 4px 4px 0;
+    padding: 5px 8px;
+    font-size: 0.8rem;
+  }
+
+  .pinned-agenda-banner-summary {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 6px;
+  }
+
+  .pinned-agenda-banner-count,
+  .pinned-agenda-banner-countdown {
+    display: none;
+  }
+
+  .pinned-agenda-banner-quick {
+    padding-top: 2px;
+  }
+}

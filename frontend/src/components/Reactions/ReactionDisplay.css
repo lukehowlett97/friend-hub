@@ -1,0 +1,39 @@
+.reaction-display {
+  display: flex;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+  margin-top: 0.35rem;
+}
+
+.reaction-bubble {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.2rem 0.5rem;
+  background: rgba(0,0,0,0.08);
+  border: 1px solid transparent;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-size: 0.75rem;
+}
+
+.reaction-bubble:hover {
+  background: rgba(0,0,0,0.12);
+}
+
+.reaction-bubble.user-reacted {
+  background: rgba(102,126,234,0.2);
+  border-color: rgba(102,126,234,0.4);
+}
+
+.reaction-emoji {
+  font-size: 0.9rem;
+}
+
+.reaction-count {
+  font-weight: 600;
+  color: #555;
+  min-width: 16px;
+  text-align: center;
+}

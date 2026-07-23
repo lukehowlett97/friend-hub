@@ -1,0 +1,209 @@
+.agenda-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 22, 36, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+  padding: 1rem;
+}
+
+.agenda-modal {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 16px 60px rgba(15, 22, 36, 0.28);
+  width: 460px;
+  max-width: 100%;
+  max-height: calc(100vh - 2rem);
+  max-height: calc(100dvh - 2rem);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.agenda-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.1rem 0.7rem;
+  border-bottom: 1px solid #f0f4f8;
+}
+
+.agenda-modal-header h2 {
+  margin: 0;
+  font-size: 1.05rem;
+  color: #1a1a2e;
+  letter-spacing: -0.01em;
+}
+
+.agenda-modal-header p {
+  margin: 0.15rem 0 0;
+  font-size: 0.78rem;
+  color: #6c757d;
+}
+
+.agenda-modal-close {
+  background: none;
+  border: none;
+  font-size: 1rem;
+  color: #9aa4b2;
+  cursor: pointer;
+  padding: 0.3rem 0.5rem;
+  border-radius: 6px;
+  line-height: 1;
+}
+.agenda-modal-close:hover { background: #f0f4f8; color: #415066; }
+
+.agenda-modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  padding: 1rem 1.1rem;
+  overflow-y: auto;
+}
+
+.agenda-modal-form label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #415066;
+  margin-bottom: 0.25rem;
+}
+
+.agenda-modal-form input,
+.agenda-modal-form select,
+.agenda-modal-form textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.55rem 0.7rem;
+  border: 1.5px solid #e1e5e9;
+  border-radius: 8px;
+  font-size: 0.92rem;
+  background: #fff;
+  outline: none;
+  transition: border-color 0.12s;
+}
+
+.agenda-modal-form input:focus,
+.agenda-modal-form select:focus,
+.agenda-modal-form textarea:focus {
+  border-color: #667eea;
+}
+
+.agenda-event-type-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.35rem;
+}
+
+.agenda-event-type-row button {
+  background: #f4f6fa;
+  border: 1.5px solid transparent;
+  border-radius: 8px;
+  padding: 0.55rem 0.5rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #415066;
+  cursor: pointer;
+}
+.agenda-event-type-row button.active {
+  background: rgba(102, 126, 234, 0.12);
+  border-color: rgba(102, 126, 234, 0.5);
+  color: #2c3a8c;
+}
+.agenda-event-type-row button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.agenda-time-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+}
+
+.agenda-modal-error {
+  margin: 0;
+  padding: 0.5rem 0.7rem;
+  background: #fff0f0;
+  border-left: 3px solid #e74c3c;
+  border-radius: 6px;
+  color: #9f2020;
+  font-size: 0.82rem;
+}
+
+.agenda-modal-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+  padding: 0.7rem 1.1rem 1rem;
+  border-top: 1px solid #f0f4f8;
+}
+
+.agenda-modal-actions button {
+  border: none;
+  border-radius: 8px;
+  padding: 0.55rem 1rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.agenda-modal-cancel {
+  background: #f4f6fa;
+  color: #415066;
+}
+.agenda-modal-cancel:hover { background: #e8ecf4; }
+
+.agenda-modal-submit {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+}
+.agenda-modal-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.chat-agenda-btn {
+  background: color-mix(in srgb, var(--color-primary) 10%, var(--color-surface-alt));
+  border: 1px solid color-mix(in srgb, var(--color-primary) 24%, var(--color-border));
+  border-radius: 999px;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  cursor: pointer;
+  letter-spacing: 0.01em;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  transition: background 0.12s ease, border-color 0.12s ease;
+}
+.chat-agenda-btn:hover {
+  background: color-mix(in srgb, var(--color-primary) 16%, var(--color-surface-alt));
+  border-color: color-mix(in srgb, var(--color-primary) 38%, var(--color-border));
+}
+.chat-agenda-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+@media (max-width: 600px) {
+  .agenda-modal-overlay {
+    padding: 0;
+    align-items: flex-end;
+  }
+  .agenda-modal {
+    width: 100%;
+    max-width: 100%;
+    border-radius: 14px 14px 0 0;
+    max-height: 92vh;
+    max-height: 92dvh;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .agenda-time-row {
+    grid-template-columns: 1fr;
+  }
+  .chat-agenda-btn {
+    padding: 0.35rem 0.55rem;
+    font-size: 0.72rem;
+  }
+}

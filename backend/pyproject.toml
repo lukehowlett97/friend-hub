@@ -1,0 +1,29 @@
+[tool.poetry]
+name = "friend-hub"
+version = "0.1.0"
+description = "prototype real-time chat app"
+authors = ["lukehowlett97 <lukehowlett97@gmail.com>"]
+readme = "../README.md"
+packages = [
+  { include = "app" }
+]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+fastapi = "^0.104.1"
+uvicorn = "^0.24.0"
+websockets = "^12.0"
+asyncpg = "^0.29.0"
+sqlalchemy = {extras = ["asyncio"], version = "^2.0.23"}
+python-dotenv = "^1.0.0"
+pydantic-settings = "^2.0.3"
+pillow = "^11.0.0"
+ffmpeg-python = "^0.2.0"
+pywebpush = "^1.14.0"
+torch = "*"
+open-clip-torch = "*"
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

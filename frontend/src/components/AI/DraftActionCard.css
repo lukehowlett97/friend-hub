@@ -1,0 +1,422 @@
+/* ── Card ──────────────────────────────────────────────────────────────────── */
+
+.dac-card {
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.08);
+}
+
+/* ── Type accent colours ───────────────────────────────────────────────────── */
+
+.dac--reminder { border-top: 3px solid #f59e0b; }
+.dac--event    { border-top: 3px solid #8b5cf6; }
+.dac--poll     { border-top: 3px solid #3b82f6; }
+
+/* ── Header ────────────────────────────────────────────────────────────────── */
+
+.dac-header {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.7rem 0.9rem 0;
+}
+
+.dac-type-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.22rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.dac--reminder .dac-type-badge { background: #fef3c7; color: #92400e; }
+.dac--event    .dac-type-badge { background: #ede9fe; color: #5b21b6; }
+.dac--poll     .dac-type-badge { background: #dbeafe; color: #1d4ed8; }
+
+.dac-eyebrow {
+  margin-left: auto;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--color-muted-text);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.dac-eyebrow--done      { color: #10b981; }
+.dac-eyebrow--dismissed { color: var(--color-muted-text); font-style: italic; }
+
+/* ── Fields ────────────────────────────────────────────────────────────────── */
+
+.dac-fields {
+  display: flex;
+  flex-direction: column;
+  padding: 0.35rem 0.9rem 0.5rem;
+}
+
+.dac-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.55rem 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.dac-field:last-child {
+  border-bottom: none;
+}
+
+.dac-field-label {
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--color-muted-text);
+}
+
+/* ── Inputs ────────────────────────────────────────────────────────────────── */
+
+.dac-input {
+  width: 100%;
+  padding: 0.42rem 0.6rem;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-surface-alt);
+  color: var(--color-text);
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 500;
+  box-sizing: border-box;
+  transition: border-color 0.14s, background 0.14s;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.dac-input::placeholder {
+  color: var(--color-muted-text);
+  opacity: 0.7;
+}
+
+.dac-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  background: var(--color-surface);
+}
+
+.dac-textarea {
+  resize: none;
+  line-height: 1.45;
+  min-height: 56px;
+}
+
+/* ── Date + time row ───────────────────────────────────────────────────────── */
+
+.dac-datetime-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.4rem;
+}
+
+.dac-datetime-row input[type="time"] {
+  width: auto;
+  min-width: 88px;
+}
+
+/* ── Poll options ──────────────────────────────────────────────────────────── */
+
+.dac-options-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.dac-option-row {
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+}
+
+.dac-option-row .dac-input {
+  flex: 1;
+}
+
+.dac-remove-btn {
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  border: 1px solid var(--color-border);
+  border-radius: 7px;
+  background: var(--color-surface-alt);
+  color: var(--color-muted-text);
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
+}
+
+.dac-remove-btn:hover {
+  background: color-mix(in srgb, #ef4444 12%, var(--color-surface));
+  color: #b91c1c;
+  border-color: color-mix(in srgb, #ef4444 40%, var(--color-border));
+}
+
+.dac-add-btn {
+  align-self: flex-start;
+  margin-top: 0.2rem;
+  padding: 0.28rem 0.65rem;
+  border: 1px dashed var(--color-border);
+  border-radius: 7px;
+  background: none;
+  color: var(--color-muted-text);
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color 0.12s, color 0.12s;
+}
+
+.dac-add-btn:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+/* ── Static title (accepted / rejected) ────────────────────────────────────── */
+
+.dac-static-title {
+  margin: 0.5rem 0.9rem 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--color-text);
+}
+
+/* ── Error ─────────────────────────────────────────────────────────────────── */
+
+.dac-error {
+  margin: 0.4rem 0.9rem 0;
+  padding: 0.4rem 0.6rem;
+  border-radius: 8px;
+  background: color-mix(in srgb, #ef4444 10%, var(--color-surface));
+  border: 1px solid color-mix(in srgb, #ef4444 25%, var(--color-border));
+  color: #b91c1c;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+/* ── Actions ───────────────────────────────────────────────────────────────── */
+
+.dac-actions {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.5rem;
+  padding: 0.75rem 0.9rem 0.85rem;
+}
+
+.dac-btn {
+  padding: 0.62rem 1rem;
+  border: none;
+  border-radius: 10px;
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: filter 0.14s, transform 0.1s, background 0.14s;
+}
+
+.dac-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.dac-btn:not(:disabled):active {
+  transform: scale(0.97);
+}
+
+.dac-btn-confirm {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.dac-btn-confirm:not(:disabled):hover {
+  filter: brightness(1.1);
+}
+
+.dac-btn-dismiss {
+  background: var(--color-surface-alt);
+  color: var(--color-muted-text);
+  border: 1px solid var(--color-border);
+  padding-inline: 0.9rem;
+}
+
+.dac-btn-dismiss:not(:disabled):hover {
+  background: color-mix(in srgb, #ef4444 10%, var(--color-surface));
+  color: #b91c1c;
+  border-color: color-mix(in srgb, #ef4444 30%, var(--color-border));
+}
+
+/* ── Tags editor ───────────────────────────────────────────────────────────── */
+
+.dac-tags-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3rem;
+  min-height: 32px;
+}
+
+.dac-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.22rem 0.5rem 0.22rem 0.6rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-primary) 12%, var(--color-surface-alt));
+  border: 1px solid color-mix(in srgb, var(--color-primary) 20%, var(--color-border));
+  color: var(--color-primary);
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.dac-tag button {
+  padding: 0;
+  border: none;
+  background: none;
+  color: inherit;
+  font-size: 0.9rem;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.12s;
+}
+
+.dac-tag button:hover { opacity: 1; }
+
+.dac-tag-input {
+  flex: 1;
+  min-width: 80px;
+  border: none;
+  background: transparent;
+  color: var(--color-text);
+  font: inherit;
+  font-size: 0.88rem;
+  outline: none;
+  padding: 0.2rem 0;
+}
+
+.dac-tag-input::placeholder { color: var(--color-muted-text); opacity: 0.6; }
+
+/* ── Result (post-accept) ──────────────────────────────────────────────────── */
+
+.dac-result {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.6rem 0.9rem 0.85rem;
+}
+
+.dac-result-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.dac-short-id {
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.18rem 0.5rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-primary) 12%, var(--color-surface-alt));
+  color: var(--color-primary);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 20%, var(--color-border));
+}
+
+.dac-result-date {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--color-muted-text);
+}
+
+.dac-result-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.dac-result-tag {
+  font-size: 0.73rem;
+  font-weight: 700;
+  color: var(--color-muted-text);
+}
+
+.dac-result-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.dac-result-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.14s, opacity 0.14s;
+  border: 1px solid var(--color-border);
+}
+
+.dac-result-btn--view {
+  background: var(--color-surface-alt);
+  color: var(--color-primary);
+}
+
+.dac-result-btn--view:hover {
+  background: color-mix(in srgb, var(--color-primary) 8%, var(--color-surface-alt));
+}
+
+.dac-result-btn--chat {
+  background: var(--color-primary);
+  color: #fff;
+  border-color: var(--color-primary);
+}
+
+.dac-result-btn--chat:hover:not(:disabled) {
+  filter: brightness(1.1);
+}
+
+.dac-result-btn--chat.sent {
+  background: #10b981;
+  border-color: #10b981;
+}
+
+.dac-result-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.dac-result-error {
+  font-size: 0.75rem;
+  color: #b91c1c;
+}
+
+/* ── Mobile ────────────────────────────────────────────────────────────────── */
+
+@media (max-width: 480px) {
+  .dac-actions {
+    grid-template-columns: 1fr;
+  }
+}

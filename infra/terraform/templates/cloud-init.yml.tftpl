@@ -1,0 +1,61 @@
+#cloud-config
+package_update: true
+package_upgrade: true
+
+groups:
+  - docker
+
+users:
+  - default
+  - name: ${deploy_user}
+    shell: /bin/bash
+    groups: [sudo, docker]
+    sudo: ["ALL=(ALL) NOPASSWD:ALL"]
+    ssh_authorized_keys:
+      - ${ssh_public_key}
+
+bootcmd:
+  - mkdir -p /opt/${project_name}
+
+write_files:
+  - path: /etc/systemd/system/friend-hub-backup.service
+    owner: root:root
+    permissions: "0644"
+    content: |
+      [Unit]
+      Description=Friend-Hub PostgreSQL backup
+      Requires=docker.service
+      After=docker.service
+
+      [Service]
+      Type=oneshot
+      User=${deploy_user}
+      WorkingDirectory=/opt/${project_name}
+      ExecStart=/bin/bash -lc 'if [ ! -x /opt/${project_name}/app/deploy/backup-postgres.sh ]; then echo "No app backup script found; skipping backup"; exit 0; fi; exec /opt/${project_name}/app/deploy/backup-postgres.sh'
+  - path: /etc/systemd/system/friend-hub-backup.timer
+    owner: root:root
+    permissions: "0644"
+    content: |
+      [Unit]
+      Description=Run Friend-Hub PostgreSQL backup nightly
+
+      [Timer]
+      OnCalendar=*-*-* 03:15:00
+      Persistent=true
+
+      [Install]
+      WantedBy=timers.target
+
+runcmd:
+  - install -m 0755 -d /opt/${project_name} /opt/${project_name}/backups
+  - chown -R ${deploy_user}:${deploy_user} /opt/${project_name}
+  - apt-get install -y ca-certificates curl gnupg git
+  - install -m 0755 -d /etc/apt/keyrings
+  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+  - chmod a+r /etc/apt/keyrings/docker.gpg
+  - sh -c 'echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" > /etc/apt/sources.list.d/docker.list'
+  - apt-get update
+  - apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+  - systemctl enable --now docker
+  - systemctl daemon-reload
+  - systemctl enable --now friend-hub-backup.timer

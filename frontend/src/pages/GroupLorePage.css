@@ -1,0 +1,528 @@
+.group-lore-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding-bottom: 6rem; /* keep last result clear of bottom nav */
+}
+
+.lore-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.lore-header h1 {
+  margin: 0;
+  font-size: 1.6rem;
+  letter-spacing: -0.01em;
+}
+
+.lore-subtitle {
+  margin: 0;
+  color: #5a6479;
+  font-size: 0.95rem;
+}
+
+/* ── search bar ──────────────────────────────────────────────── */
+
+.lore-search-bar {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border: 1px solid #e3e7f1;
+  border-radius: 14px;
+  padding: 0.65rem 0.9rem;
+}
+
+.lore-search-bar:focus-within {
+  border-color: #8ea0f0;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.14);
+}
+
+.lore-search-bar input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 1rem;
+  color: #172033;
+}
+
+.lore-search-icon {
+  margin-right: 0.5rem;
+  opacity: 0.55;
+}
+
+/* ── date filters ────────────────────────────────────────────── */
+
+.lore-filters {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.lore-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.lore-chip {
+  border: 1px solid #e3e7f1;
+  background: #fff;
+  border-radius: 999px;
+  padding: 0.35rem 0.85rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #4a536b;
+  cursor: pointer;
+  transition: background 120ms ease, color 120ms ease, border-color 120ms ease;
+}
+
+.lore-chip:hover {
+  border-color: #c8d0eb;
+  color: #1f2533;
+}
+
+.lore-chip.is-active {
+  background: #1f2533;
+  border-color: #1f2533;
+  color: #fff;
+}
+
+.lore-chip-custom {
+  font-style: italic;
+}
+
+.lore-custom-range {
+  background: #fff;
+  border: 1px solid #eaedf5;
+  border-radius: 14px;
+  padding: 0.7rem 0.85rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  align-items: flex-end;
+}
+
+.lore-custom-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.78rem;
+  color: #6a7388;
+  font-weight: 600;
+  flex: 1;
+  min-width: 140px;
+  cursor: pointer;
+}
+
+.lore-date-input {
+  position: relative;
+  display: flex;
+  align-items: center;
+  border: 1px solid #d8deea;
+  border-radius: 12px;
+  background: #fff;
+  transition: border-color 120ms ease, box-shadow 120ms ease;
+  min-height: 44px;
+}
+
+.lore-date-input:hover {
+  border-color: #c8d0eb;
+}
+
+.lore-date-input:focus-within {
+  border-color: #8ea0f0;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.14);
+}
+
+.lore-custom-field input[type="date"] {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  padding: 0.65rem 0.75rem;
+  font-size: 0.95rem;
+  font-family: inherit;
+  color: #172033;
+  color-scheme: light;
+  cursor: pointer;
+  min-width: 0;
+  /* Stretch the native picker hit area to cover the whole field. */
+  width: 100%;
+}
+
+/* Hide the tiny calendar icon WebKit/Blink puts on the right — we render
+   our own bigger one and rely on showPicker() / tap-anywhere to open. */
+.lore-custom-field input[type="date"]::-webkit-calendar-picker-indicator {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.lore-date-icon {
+  position: absolute;
+  right: 0.65rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.05rem;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.lore-custom-clear {
+  border: none;
+  background: transparent;
+  color: #8a5050;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 0.5rem 0.5rem;
+}
+
+.lore-custom-clear:hover {
+  color: #b03030;
+}
+
+/* ── tabs ────────────────────────────────────────────────────── */
+
+.lore-tabs {
+  display: flex;
+  gap: 0.25rem;
+  background: #eef0f8;
+  border-radius: 999px;
+  padding: 0.25rem;
+  align-self: flex-start;
+}
+
+.lore-tab {
+  border: none;
+  background: transparent;
+  padding: 0.5rem 1.1rem;
+  font-size: 0.9rem;
+  border-radius: 999px;
+  color: #4a536b;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 120ms ease, color 120ms ease;
+}
+
+.lore-tab:hover {
+  color: #1f2533;
+}
+
+.lore-tab.is-active {
+  background: #fff;
+  color: #1f2533;
+  box-shadow: 0 1px 2px rgba(20, 30, 60, 0.06);
+}
+
+/* ── state blocks ────────────────────────────────────────────── */
+
+.lore-state {
+  background: #fff;
+  border: 1px solid #eaedf5;
+  border-radius: 16px;
+  padding: 1.25rem;
+  text-align: center;
+  color: #475063;
+}
+
+.lore-state .lore-state-title {
+  font-weight: 700;
+  color: #1f2533;
+  margin: 0 0 0.25rem;
+}
+
+.lore-state .lore-state-sub {
+  margin: 0;
+  color: #6a7388;
+  font-size: 0.9rem;
+}
+
+.lore-state.is-error {
+  border-color: #f3c0c4;
+  background: #fff5f6;
+  color: #8a2a31;
+}
+
+/* ── message result cards ────────────────────────────────────── */
+
+.lore-results {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.lore-card {
+  background: #fff;
+  border: 1px solid #eaedf5;
+  border-radius: 16px;
+  padding: 0.85rem 0.95rem;
+  display: flex;
+  gap: 0.85rem;
+  align-items: flex-start;
+  cursor: pointer;
+  transition: transform 80ms ease, box-shadow 120ms ease, border-color 120ms ease, background 120ms ease;
+  text-align: left;
+}
+
+.lore-card:hover {
+  border-color: #d3dcf3;
+  box-shadow: 0 4px 12px rgba(20, 30, 60, 0.06);
+}
+
+.lore-card:focus-visible {
+  outline: none;
+  border-color: #8ea0f0;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.18);
+}
+
+.lore-card:active {
+  transform: translateY(1px);
+  background: #fafbff;
+}
+
+.lore-card-body {
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+}
+
+.lore-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-bottom: 0.2rem;
+}
+
+.lore-card-name {
+  font-weight: 700;
+  color: #1f2533;
+  font-size: 0.95rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lore-card-time {
+  color: #8a92a6;
+  font-size: 0.78rem;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.lore-card-snippet {
+  margin: 0;
+  color: #2f3650;
+  font-size: 0.95rem;
+  line-height: 1.42;
+  word-break: break-word;
+  text-align: left;
+}
+
+.lore-card-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+  color: #5868c8;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.lore-card-action {
+  letter-spacing: 0.01em;
+}
+
+.lore-card-chev {
+  color: #a3aac0;
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+/* ── highlight mark ──────────────────────────────────────────── */
+
+.lore-mark {
+  background: #ffeaa3;
+  color: inherit;
+  padding: 0 3px;
+  border-radius: 4px;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+/* ── people tab ──────────────────────────────────────────────── */
+
+.lore-summary-line {
+  margin: 0;
+  font-size: 1rem;
+  color: #2f3650;
+  font-weight: 600;
+}
+
+.lore-champion {
+  background: linear-gradient(135deg, #fff4d6, #ffe1ef);
+  border: 1px solid #f6e0c8;
+  border-radius: 18px;
+  padding: 0.85rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.lore-champion-badge {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #92561e;
+  text-transform: uppercase;
+}
+
+.lore-champion-body {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.lore-champion-name {
+  font-weight: 800;
+  color: #1f2533;
+  font-size: 1.05rem;
+}
+
+.lore-champion-count {
+  color: #6a4a1e;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.lore-people-summary {
+  background: #fff;
+  border: 1px solid #eaedf5;
+  border-radius: 16px;
+  padding: 0.9rem 1rem;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-around;
+  text-align: center;
+}
+
+.lore-people-summary .stat-value {
+  display: block;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #1f2533;
+  line-height: 1.1;
+}
+
+.lore-people-summary .stat-label {
+  display: block;
+  font-size: 0.82rem;
+  color: #6a7388;
+  font-weight: 600;
+  margin-top: 0.15rem;
+}
+
+.lore-stats-link {
+  background: none;
+  border: none;
+  color: #667eea;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.2rem 0;
+  align-self: center;
+  white-space: nowrap;
+}
+
+.lore-stats-link:hover {
+  text-decoration: underline;
+}
+
+.lore-people-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.lore-person-row {
+  background: #fff;
+  border: 1px solid #eaedf5;
+  border-radius: 14px;
+  padding: 0.7rem 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.lore-person-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.lore-person-name {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-bottom: 0.35rem;
+  font-size: 0.95rem;
+}
+
+.lore-person-label {
+  font-weight: 700;
+  color: #1f2533;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lore-person-stats {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  flex-shrink: 0;
+}
+
+.lore-person-count {
+  color: #1f2533;
+  font-weight: 700;
+}
+
+.lore-person-dot {
+  color: #b8becf;
+}
+
+.lore-person-pct {
+  color: #6a7388;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.lore-bar {
+  height: 8px;
+  background: #eef0f8;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.lore-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #8ea0f0, #5868c8);
+  border-radius: 999px;
+  transition: width 220ms ease;
+}
+
+@media (min-width: 720px) {
+  .lore-header h1 { font-size: 2rem; }
+  .group-lore-page { padding-bottom: 2rem; }
+}

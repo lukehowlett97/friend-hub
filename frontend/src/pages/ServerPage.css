@@ -1,0 +1,158 @@
+.server-page { max-width: 780px; }
+
+.srv-refresh-btn {
+  background: none;
+  border: 1px solid #d1d8e0;
+  border-radius: 7px;
+  padding: 0.4rem 0.9rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #415066;
+  cursor: pointer;
+  margin-bottom: 1.25rem;
+}
+.srv-refresh-btn:hover { background: #f0f4f8; }
+
+/* ── Grid ── */
+.srv-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* ── Card ── */
+.srv-card {
+  background: #fff;
+  border: 1px solid #e6ebf2;
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+}
+
+.srv-card-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #172033;
+  margin: 0 0 1rem;
+}
+
+/* ── Usage bar ── */
+.srv-bar-wrap { margin-bottom: 0.75rem; }
+
+.srv-bar-track {
+  position: relative;
+  height: 10px;
+  background: #eef2f6;
+  border-radius: 999px;
+  overflow: visible;
+  margin-bottom: 0.35rem;
+}
+
+.srv-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.4s ease;
+  min-width: 2px;
+}
+
+.srv-bar-warn-marker {
+  position: absolute;
+  top: -3px;
+  bottom: -3px;
+  width: 2px;
+  background: #f59e0b;
+  border-radius: 1px;
+  z-index: 1;
+}
+
+.srv-bar-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  color: #687386;
+}
+
+/* ── Stat tiles ── */
+.srv-stat-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.srv-stat-tile {
+  flex: 1 1 80px;
+  background: #f8fafc;
+  border: 1px solid #eef2f6;
+  border-radius: 8px;
+  padding: 0.6rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 80px;
+}
+
+.srv-stat-value {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #172033;
+  white-space: nowrap;
+}
+
+.srv-stat-label {
+  font-size: 0.72rem;
+  color: #9aa4b2;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.srv-stat-sub {
+  font-size: 0.72rem;
+  color: #687386;
+}
+
+/* ── AI section ── */
+.srv-ai-unconfigured {
+  padding: 0.5rem 0;
+  color: #687386;
+  font-size: 0.9rem;
+}
+.srv-ai-unconfigured p { margin: 0 0 0.35rem; }
+
+.srv-ai-hint {
+  margin: 0.5rem 0;
+  font-size: 0.82rem;
+  color: #9aa4b2;
+}
+.srv-ai-hint code {
+  font-family: monospace;
+  background: #f0f4f8;
+  padding: 0.1rem 0.3rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+}
+
+.srv-ai-provider {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.75rem;
+}
+
+.srv-ai-badge {
+  font-size: 0.75rem;
+  font-weight: 800;
+  background: #eef2ff;
+  color: #667eea;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  text-transform: capitalize;
+}
+
+.srv-ai-status {
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.srv-ai-status--ok   { color: #22c55e; }
+.srv-ai-status--warn { color: #f59e0b; }

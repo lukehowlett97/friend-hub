@@ -1,0 +1,241 @@
+.poll-edit-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+  padding: 16px;
+}
+
+.poll-edit-modal {
+  background: #fff;
+  border-radius: 14px;
+  max-width: 520px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.25);
+  display: flex;
+  flex-direction: column;
+}
+
+.poll-edit-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 18px 20px 8px;
+  gap: 12px;
+}
+
+.poll-edit-header h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.poll-edit-header p {
+  margin: 2px 0 0;
+  font-size: 0.82rem;
+  color: #5a6478;
+}
+
+.poll-edit-close {
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  color: #5a6478;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+.poll-edit-close:hover { background: #f0f4f8; color: #1a2030; }
+
+.poll-edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px 20px 20px;
+}
+
+.poll-edit-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #1f2533;
+}
+.poll-edit-form label small {
+  font-weight: 400;
+  color: #5a6478;
+  margin-left: 4px;
+}
+
+.poll-edit-form input,
+.poll-edit-form textarea {
+  font: inherit;
+  padding: 8px 10px;
+  border: 1px solid #d8dde7;
+  border-radius: 8px;
+  background: #fff;
+  color: #1f2533;
+}
+.poll-edit-form input:focus,
+.poll-edit-form textarea:focus {
+  outline: none;
+  border-color: #4361ee;
+  box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.18);
+}
+
+.poll-edit-hint {
+  font-size: 0.82rem;
+  color: #5a6478;
+  margin: 0;
+  padding: 8px 10px;
+  background: #f6f7fb;
+  border-radius: 8px;
+  border: 1px dashed #d8dde7;
+}
+
+.poll-edit-short-id {
+  display: flex;
+  align-items: stretch;
+  border: 1px solid #d8dde7;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+}
+.poll-edit-short-id:focus-within {
+  border-color: #4361ee;
+  box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.18);
+}
+.poll-edit-short-id-hash {
+  background: #f6f7fb;
+  color: #5a6478;
+  padding: 8px 10px;
+  font-weight: 700;
+  border-right: 1px solid #d8dde7;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+.poll-edit-short-id input {
+  border: none !important;
+  border-radius: 0 !important;
+  flex: 1 1 auto;
+  background: transparent;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+.poll-edit-short-id input:focus {
+  box-shadow: none !important;
+  outline: none;
+}
+.poll-edit-short-id input[aria-invalid="true"] { color: #c1402c; }
+
+.poll-edit-short-id-hint {
+  font-weight: 400;
+  color: #5a6478;
+  margin-top: 4px;
+}
+
+.poll-edit-time-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+@media (max-width: 480px) {
+  .poll-edit-time-row { grid-template-columns: 1fr; }
+}
+
+.poll-edit-error {
+  color: #c1402c;
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.poll-edit-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding-top: 4px;
+}
+
+.poll-edit-cancel,
+.poll-edit-submit {
+  font: inherit;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 8px 14px;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+.poll-edit-cancel {
+  background: #fff;
+  border-color: #d8dde7;
+  color: #1f2533;
+}
+.poll-edit-cancel:hover { background: #f0f4f8; }
+.poll-edit-submit {
+  background: #4361ee;
+  color: #fff;
+}
+.poll-edit-submit:hover:not(:disabled) { background: #2a44c8; }
+.poll-edit-submit:disabled { opacity: 0.7; cursor: not-allowed; }
+
+/* ── Reminder edit extras ─────────────────────────────────────────────────── */
+
+.poll-edit-form-section-label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #1f2533;
+  margin-bottom: 6px;
+}
+
+.reminder-edit-recurrence-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.reminder-edit-recurrence-row select {
+  flex: 1;
+  font: inherit;
+  padding: 8px 10px;
+  border: 1px solid #d8dde7;
+  border-radius: 8px;
+  background: #fff;
+  color: #1f2533;
+}
+.reminder-edit-recurrence-row select:focus {
+  outline: none;
+  border-color: #4361ee;
+  box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.18);
+}
+
+.reminder-edit-days-input {
+  width: 80px;
+}
+
+.reminder-edit-assignees {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  padding: 8px 2px 2px;
+}
+
+.reminder-edit-assignee-check {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: #1f2533;
+  cursor: pointer;
+}
+
+.reminder-edit-assignee-check input[type="checkbox"] {
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
+  accent-color: #4361ee;
+}

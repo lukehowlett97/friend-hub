@@ -1,0 +1,2 @@
+"""Image embedding job foundation."""
+

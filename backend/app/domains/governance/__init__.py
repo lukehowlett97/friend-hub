@@ -1,0 +1,1 @@
+"""Chat governance voting domain."""

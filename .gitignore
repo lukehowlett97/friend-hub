@@ -1,0 +1,62 @@
+# Dependencies
+node_modules/
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Environment / secrets — never commit these
+.env
+.env.deploy
+.env.prod
+.env.local
+.env.*.local
+deploy/prod.env
+backend/app/.env
+importers/**/data/
+config/messenger_sender_map.json
+terraform.tfvars
+*.auto.tfvars
+*.tfstate
+*.tfstate.*
+
+# Build output
+dist/
+build/
+frontend/dev-dist/
+*.egg-info/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+
+# Terraform / deployment runtime
+.terraform/
+crash.log
+crash.*.log
+backups/
+runtime/*
+!runtime/.gitkeep
+
+# Runtime uploads (generated binary data)
+backend/runtime/uploads/
+cloudflared.deb
+
+# OS
+.DS_Store
+Thumbs.db
+*:Zone.Identifier
+__pycache__/
+friend_hub_local_dump.sql
+
+# Private topic refinement exports/imports
+nips-topic-*.jsonl
+nips-topic-*.manifest.json
+nips-topic-*.md

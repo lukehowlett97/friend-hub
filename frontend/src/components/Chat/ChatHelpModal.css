@@ -1,0 +1,102 @@
+.chat-help__backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 130;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(6px);
+  animation: chat-help-fade 0.16s ease-out;
+}
+
+@keyframes chat-help-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.chat-help {
+  width: min(460px, 100%);
+  max-height: 82vh;
+  overflow-y: auto;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 18px;
+  box-shadow: 0 24px 70px rgba(15, 23, 42, 0.26);
+}
+
+.chat-help__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1rem 0.75rem;
+  border-bottom: 1px solid var(--color-border);
+  position: sticky;
+  top: 0;
+  background: var(--color-surface);
+}
+
+.chat-help__header h2 {
+  margin: 0;
+  font-size: 1.05rem;
+  color: var(--color-text);
+}
+
+.chat-help__close {
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-surface-alt);
+  color: var(--color-text);
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.chat-help__close:hover {
+  background: color-mix(in srgb, var(--color-primary) 12%, var(--color-surface-alt));
+}
+
+.chat-help__list {
+  list-style: none;
+  margin: 0;
+  padding: 0.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.chat-help__item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.6rem 0.65rem;
+  border-radius: 12px;
+}
+
+.chat-help__item:hover { background: var(--color-surface-alt); }
+
+.chat-help__icon {
+  flex: 0 0 auto;
+  font-size: 1.35rem;
+  line-height: 1.4;
+}
+
+.chat-help__text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.chat-help__text strong {
+  font-size: 0.92rem;
+  color: var(--color-text);
+}
+
+.chat-help__text span {
+  font-size: 0.82rem;
+  color: var(--color-muted-text);
+  line-height: 1.4;
+}

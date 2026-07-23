@@ -1,0 +1,110 @@
+/* Fixed top banner — above the app shell, below the browser chrome.
+   Positioned at the top to avoid fighting with the mobile bottom nav. */
+.install-prompt {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 200;
+  background: #101827;
+  color: #fff;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  animation: prompt-slide-down 0.3s ease;
+  /* Safe area for notched phones */
+  padding-top: env(safe-area-inset-top);
+}
+
+@keyframes prompt-slide-down {
+  from { transform: translateY(-100%); opacity: 0; }
+  to   { transform: translateY(0);     opacity: 1; }
+}
+
+.install-prompt-inner {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.7rem 1rem;
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.install-prompt-icon {
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+
+.install-prompt-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  font-size: 0.82rem;
+  line-height: 1.35;
+}
+
+.install-prompt-text strong {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.install-prompt-text span {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* The ⎋ share symbol on iOS */
+.install-ios-share {
+  display: inline-block;
+  font-size: 1rem;
+  vertical-align: middle;
+  color: #667eea;
+}
+
+.install-prompt-action {
+  flex-shrink: 0;
+  padding: 0.45rem 1rem;
+  background: #667eea;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: filter 0.15s;
+}
+
+.install-prompt-action:hover {
+  filter: brightness(1.12);
+}
+
+.install-prompt-close {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0.25rem;
+  line-height: 1;
+  transition: color 0.1s;
+  /* 44px touch target */
+  min-width: 36px;
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+}
+
+.install-prompt-close:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* On very narrow screens, hide the icon to save space */
+@media (max-width: 360px) {
+  .install-prompt-icon { display: none; }
+}

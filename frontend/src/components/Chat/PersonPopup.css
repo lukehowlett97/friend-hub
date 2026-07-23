@@ -1,0 +1,300 @@
+.person-popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 18, 36, 0.45);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.person-popup-card {
+  position: relative;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 16px 48px rgba(10, 18, 36, 0.22);
+  padding: 1.5rem;
+  width: 100%;
+  max-width: 360px;
+}
+
+/* Mobile: render the modal as a bottom sheet for a more native feel. The chat
+   input bar and bottom nav are fixed over the bottom of the screen, so the sheet
+   must stop short of them — otherwise its action buttons end up hidden behind
+   them. We reserve room for the nav + input bar and let the sheet scroll. */
+@media (max-width: 540px) {
+  .person-popup-overlay {
+    align-items: flex-end;
+    padding: 0;
+    /* Space taken up by the fixed chat input bar + bottom nav at the screen
+       bottom. The sheet sits above this gap. */
+    --person-popup-bottom-clearance: calc(
+      var(--bottom-nav-height, 72px) + 3.75rem + env(safe-area-inset-bottom, 0px)
+    );
+  }
+  .person-popup-card.person-popup-sheet {
+    max-width: 100%;
+    border-radius: 18px 18px 0 0;
+    padding: 1.5rem 1.25rem 2rem;
+    box-shadow: 0 -12px 32px rgba(10, 18, 36, 0.22);
+    animation: person-popup-slide-up 0.18s ease-out;
+    /* Push the sheet up above the input bar + nav, and cap its height so tall
+       content scrolls inside the sheet rather than disappearing behind them. */
+    margin-bottom: var(--person-popup-bottom-clearance);
+    max-height: calc(100vh - var(--person-popup-bottom-clearance) - 1rem);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  @keyframes person-popup-slide-up {
+    from { transform: translateY(100%); }
+    to   { transform: translateY(0); }
+  }
+}
+
+.person-popup-close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  background: none;
+  border: none;
+  font-size: 0.9rem;
+  color: #9aa4b2;
+  cursor: pointer;
+  padding: 0.25rem;
+  line-height: 1;
+}
+.person-popup-close:hover { color: #415066; }
+
+.person-popup-state {
+  padding: 1.5rem 0;
+  text-align: center;
+  color: #9aa4b2;
+  font-size: 0.9rem;
+}
+.person-popup-state--error { color: #e74c3c; }
+
+/* ── Header ── */
+.person-popup-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.person-popup-avatar-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.person-popup-avatar-wrap > * {
+  /* UserAvatar handles its own shape — nothing extra needed */
+}
+
+.person-popup-online-dot {
+  position: absolute;
+  right: 2px;
+  bottom: 2px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  background: #9aa4b2;
+}
+.person-popup-online-dot.online { background: #22c55e; }
+
+.person-popup-identity {
+  min-width: 0;
+}
+
+.person-popup-name {
+  margin: 0 0 0.15rem;
+  font-size: 1.1rem;
+  color: #172033;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.person-popup-username {
+  margin: 0 0 0.45rem;
+  font-size: 0.82rem;
+  color: #9aa4b2;
+}
+
+.person-popup-role {
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: capitalize;
+  padding: 0.18rem 0.5rem;
+  border-radius: 999px;
+}
+
+.person-popup-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  align-items: center;
+}
+
+.person-popup-display-role {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.18rem 0.5rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  color: #78350f;
+}
+
+.person-popup-avatar-emoji {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #f1f5f9;
+  font-size: 1.75rem;
+  line-height: 1;
+}
+
+.person-popup-description {
+  margin: 0 0 1rem;
+  padding: 0.75rem 0.9rem;
+  background: #f8fafc;
+  border-radius: 10px;
+  border: 1px solid #e6ebf2;
+}
+
+.person-popup-description span {
+  display: block;
+  margin-bottom: 0.3rem;
+  color: #64748b;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.person-popup-description p {
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  color: #334155;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.person-popup-description.empty p {
+  color: #94a3b8;
+  font-style: italic;
+}
+
+.person-popup-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.person-popup-secondary-btn {
+  display: block;
+  width: 100%;
+  padding: 0.55rem 1rem;
+  background: #f1f5f9;
+  color: #334155;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.person-popup-secondary-btn:hover { background: #e2e8f0; }
+.person-popup-secondary-btn:disabled { opacity: 0.6; cursor: default; }
+
+/* ── Edit form ── */
+.person-popup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.person-popup-form-title {
+  margin: 0;
+  font-size: 1.05rem;
+  color: #172033;
+}
+
+.person-popup-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.8rem;
+  color: #475569;
+}
+
+.person-popup-field input,
+.person-popup-field textarea {
+  font: inherit;
+  font-size: 0.9rem;
+  color: #172033;
+  padding: 0.55rem 0.75rem;
+  background: #fff;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.15s;
+  resize: vertical;
+}
+.person-popup-field input:focus,
+.person-popup-field textarea:focus {
+  border-color: #667eea;
+}
+
+.person-popup-form-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+.person-popup-form-actions > * { flex: 1; }
+
+/* ── Stats ── */
+.person-popup-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+  padding: 1rem;
+  background: #f8fafc;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.person-popup-stat-value {
+  display: block;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #172033;
+}
+
+.person-popup-stat-label {
+  display: block;
+  font-size: 0.72rem;
+  color: #9aa4b2;
+  margin-top: 0.1rem;
+}
+
+/* ── CTA ── */
+.person-popup-view-btn {
+  display: block;
+  width: 100%;
+  padding: 0.65rem 1rem;
+  background: #667eea;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.person-popup-view-btn:hover { background: #5168d9; }

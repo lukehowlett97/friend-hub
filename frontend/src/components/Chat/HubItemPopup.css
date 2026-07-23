@@ -1,0 +1,129 @@
+.hub-popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 18, 36, 0.45);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.hub-popup-card {
+  position: relative;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 16px 48px rgba(10, 18, 36, 0.22);
+  padding: 1.5rem;
+  width: 100%;
+  max-width: 400px;
+}
+
+.hub-popup-close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  background: none;
+  border: none;
+  font-size: 0.9rem;
+  color: #9aa4b2;
+  cursor: pointer;
+  padding: 0.25rem;
+  line-height: 1;
+}
+
+.hub-popup-close:hover { color: #415066; }
+
+.hub-popup-state {
+  padding: 1.5rem 0;
+  text-align: center;
+  color: #9aa4b2;
+  font-size: 0.9rem;
+}
+
+.hub-popup-state--error { color: #e74c3c; }
+
+/* ── Header row ── */
+.hub-popup-head {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.hub-popup-badge {
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  letter-spacing: 0.04em;
+}
+
+.hub-popup-badge--idea     { background: #fef9c3; color: #854d0e; }
+.hub-popup-badge--poll     { background: #dbeafe; color: #1e40af; }
+.hub-popup-badge--reminder { background: #fce7f3; color: #9d174d; }
+.hub-popup-badge--event    { background: #d1fae5; color: #065f46; }
+.hub-popup-badge--note     { background: #f3f4f6; color: #374151; }
+
+.hub-popup-ref {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #667eea;
+  font-family: monospace;
+}
+
+.hub-popup-status {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.15rem 0.45rem;
+  border-radius: 999px;
+  margin-left: auto;
+}
+
+.hub-popup-status--open     { background: #ecfdf5; color: #065f46; }
+.hub-popup-status--done     { background: #f3f4f6; color: #6b7280; }
+.hub-popup-status--archived { background: #fef2f2; color: #991b1b; }
+
+/* ── Content ── */
+.hub-popup-title {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+  color: #172033;
+  line-height: 1.4;
+  padding-right: 1.5rem;
+}
+
+.hub-popup-body {
+  margin: 0 0 0.75rem;
+  font-size: 0.875rem;
+  color: #415066;
+  line-height: 1.55;
+}
+
+.hub-popup-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  margin-bottom: 1rem;
+  font-size: 0.8rem;
+  color: #687386;
+}
+
+.hub-popup-view-btn {
+  display: block;
+  width: 100%;
+  padding: 0.65rem 1rem;
+  background: #667eea;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: center;
+  transition: background 0.15s;
+}
+
+.hub-popup-view-btn:hover { background: #5168d9; }

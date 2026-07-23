@@ -1,0 +1,26 @@
+[project]
+name = "friend-hub"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "lukehowlett97",email = "lukehowlett97@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "websockets (>=15.0.1,<16.0.0)",
+    "requests (>=2.32.4,<3.0.0)",
+    "pytest (>=9.0.2,<10.0.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+package-mode = false
+[tool.poetry.group.dev.dependencies]
+websockets = "^15.0.1"
+requests = "^2.32.4"
+

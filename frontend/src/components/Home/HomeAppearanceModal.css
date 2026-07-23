@@ -1,0 +1,211 @@
+.home-appearance-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.home-appearance-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: rgba(7, 15, 30, 0.55);
+  cursor: pointer;
+}
+
+.home-appearance-modal__sheet {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 640px;
+  max-height: 92vh;
+  overflow-y: auto;
+  background: #fff;
+  border-radius: 18px 18px 0 0;
+  box-shadow: 0 -18px 60px rgba(7, 15, 30, 0.25);
+  padding: 1rem 1.1rem 1.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+@media (min-width: 769px) {
+  .home-appearance-modal {
+    align-items: center;
+    padding: 1.5rem;
+  }
+  .home-appearance-modal__sheet {
+    border-radius: 16px;
+    max-width: 720px;
+  }
+}
+
+.home-appearance-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.home-appearance-modal__header h2 {
+  margin: 0;
+  font-size: 1.05rem;
+  color: #172033;
+}
+
+.home-appearance-modal__close {
+  border: 0;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  background: #f2f4fa;
+  color: #172033;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.home-appearance-modal__preview {
+  position: relative;
+  width: 100%;
+  height: 180px;
+  border-radius: 12px;
+  background: #edf0f5;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.home-appearance-modal__preview.is-draggable {
+  cursor: grab;
+  touch-action: none;
+}
+
+.home-appearance-modal__preview.is-dragging {
+  cursor: grabbing;
+}
+
+.home-appearance-modal__preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.home-appearance-modal__preview-empty {
+  color: #687386;
+  font-size: 0.9rem;
+}
+
+.home-appearance-modal__drag-hint {
+  position: absolute;
+  bottom: 0.6rem;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.6);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  pointer-events: none;
+  opacity: 0.92;
+  transition: opacity 0.15s;
+}
+
+.home-appearance-modal__preview.is-dragging .home-appearance-modal__drag-hint {
+  opacity: 0;
+}
+
+.home-appearance-modal__actions {
+  margin-top: 0.85rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding-top: 0.25rem;
+}
+
+.home-appearance-modal__save,
+.home-appearance-modal__remove {
+  flex: 1;
+  min-width: 130px;
+  border: 0;
+  border-radius: 999px;
+  padding: 0.55rem 1rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.home-appearance-modal__save {
+  background: #5168d9;
+  color: #fff;
+}
+
+.home-appearance-modal__remove {
+  background: #fff;
+  color: #c2410c;
+  border: 1px solid #f2cba2;
+}
+
+.home-appearance-modal__save:disabled,
+.home-appearance-modal__remove:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.home-appearance-modal__subhead {
+  margin: 0.2rem 0 0;
+  font-size: 0.95rem;
+  color: #172033;
+}
+
+.home-appearance-modal__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: 0.45rem;
+}
+
+.home-appearance-modal__photo {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 2px solid transparent;
+  background: #edf0f5;
+  cursor: pointer;
+  padding: 0;
+}
+
+.home-appearance-modal__photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.home-appearance-modal__photo.is-current {
+  border-color: #5168d9;
+  box-shadow: 0 0 0 2px rgba(81, 104, 217, 0.25);
+}
+
+.home-appearance-modal__photo:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.home-appearance-modal__badge {
+  position: absolute;
+  bottom: 4px;
+  left: 4px;
+  padding: 2px 6px;
+  font-size: 0.65rem;
+  border-radius: 999px;
+  background: rgba(81, 104, 217, 0.92);
+  color: #fff;
+  font-weight: 700;
+}

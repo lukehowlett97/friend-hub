@@ -1,0 +1,20 @@
+{$DOMAIN_NAME} {
+  encode gzip zstd
+
+  handle /api/* {
+    reverse_proxy backend:8000
+  }
+
+  @websocket path /ws /ws/*
+  handle @websocket {
+    reverse_proxy backend:8000
+  }
+
+  handle /uploads/* {
+    reverse_proxy backend:8000
+  }
+
+  handle {
+    reverse_proxy frontend:80
+  }
+}

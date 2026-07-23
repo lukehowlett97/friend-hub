@@ -1,0 +1,63 @@
+.chat-message-toast {
+  position: fixed;
+  top: max(0.85rem, env(safe-area-inset-top));
+  left: 50%;
+  z-index: 2000;
+  width: min(420px, calc(100vw - 2rem));
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid rgba(225, 229, 233, 0.95);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 14px 40px rgba(20, 30, 54, 0.22);
+  color: #1a1a2e;
+  cursor: pointer;
+  text-align: left;
+  transform: translateX(-50%);
+  animation: chat-message-toast-slide 3.6s ease forwards;
+  backdrop-filter: blur(12px);
+}
+
+.chat-message-toast__body {
+  display: grid;
+  gap: 0.05rem;
+  min-width: 0;
+}
+
+.chat-message-toast__sender {
+  font-size: 0.84rem;
+  font-weight: 800;
+  color: #1a1a2e;
+}
+
+.chat-message-toast__preview {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.86rem;
+  color: #566174;
+}
+
+@keyframes chat-message-toast-slide {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -120%);
+  }
+  10%, 82% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -120%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chat-message-toast {
+    animation: none;
+  }
+}

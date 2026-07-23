@@ -1,0 +1,312 @@
+/* ──────────────────────────────────────────────────────────────────────────────
+   "What's Happening" Feed Section
+   ────────────────────────────────────────────────────────────────────────────── */
+
+.whats-happening-feed {
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr);
+  gap: 1.2rem;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
+/* ──── Header ──── */
+
+.feed-header {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.feed-title {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #172033;
+  line-height: 1.2;
+}
+
+.feed-subtitle {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+/* ──── Filter Chips ──── */
+
+.feed-filters {
+  display: flex;
+  gap: 0.6rem;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 0.4rem;
+}
+
+.feed-filters::-webkit-scrollbar {
+  height: 3px;
+}
+
+.feed-filters::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.feed-filters::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 2px;
+}
+
+.feed-filter-chip {
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 0.9rem;
+  border: 1px solid #d1d5db;
+  border-radius: 16px;
+  background: #fff;
+  color: #6b7280;
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.feed-filter-chip:hover {
+  border-color: #9ca3af;
+  background: #f9fafb;
+  color: #4b5563;
+}
+
+.feed-filter-chip.active {
+  border-color: #5168d9;
+  background: #5168d9;
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(81, 104, 217, 0.24);
+}
+
+.feed-filter-chip.active:hover {
+  background: #4158c5;
+  border-color: #4158c5;
+  box-shadow: 0 4px 12px rgba(81, 104, 217, 0.28);
+}
+
+/* ──── Feed Container & Cards ──── */
+
+.feed-cards-container {
+  display: grid;
+  grid-template-rows: 1fr;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.feed-cards {
+  display: grid;
+  gap: 0.8rem;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding-right: 0.4rem;
+}
+
+.feed-cards::-webkit-scrollbar {
+  width: 6px;
+}
+
+.feed-cards::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.feed-cards::-webkit-scrollbar-thumb {
+  background: #e5e7eb;
+  border-radius: 3px;
+}
+
+.feed-cards::-webkit-scrollbar-thumb:hover {
+  background: #d1d5db;
+}
+
+/* ──── Empty State ──── */
+
+.feed-empty-state {
+  display: grid;
+  place-items: center;
+  gap: 0.6rem;
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #6b7280;
+}
+
+.feed-empty-icon {
+  font-size: 3rem;
+  line-height: 1;
+}
+
+.feed-empty-title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.feed-empty-subtitle {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #9ca3af;
+  max-width: 280px;
+}
+
+/* ──── Loading State ──── */
+
+.feed-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+  color: #6b7280;
+  font-size: 0.95rem;
+}
+
+/* ──── Compact Version ──── */
+
+.compact-feed {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.compact-feed .activity-feed-card {
+  padding: 0.7rem;
+}
+
+.compact-feed .activity-card-title {
+  font-size: 0.9rem;
+  -webkit-line-clamp: 1;
+}
+
+.compact-feed .activity-card-subtitle {
+  font-size: 0.75rem;
+}
+
+/* ──────────────────────────────────────────────────────────────────────────────
+   Responsive Adjustments
+   ────────────────────────────────────────────────────────────────────────────── */
+
+@media (max-width: 640px) {
+  .whats-happening-feed {
+    gap: 1rem;
+  }
+
+  .feed-title {
+    font-size: 1.15rem;
+  }
+
+  .feed-subtitle {
+    font-size: 0.8rem;
+  }
+
+  .feed-filters {
+    gap: 0.5rem;
+  }
+
+  .feed-filter-chip {
+    height: 26px;
+    padding: 0 0.8rem;
+    font-size: 0.75rem;
+  }
+
+  .feed-cards {
+    gap: 0.7rem;
+  }
+
+  .feed-empty-state {
+    padding: 2.5rem 1rem;
+  }
+
+  .feed-empty-icon {
+    font-size: 2.5rem;
+  }
+
+  .feed-empty-title {
+    font-size: 1rem;
+  }
+
+  .feed-empty-subtitle {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .whats-happening-feed {
+    gap: 0.9rem;
+  }
+
+  .feed-title {
+    font-size: 1.05rem;
+  }
+
+  .feed-subtitle {
+    font-size: 0.75rem;
+  }
+
+  .feed-filters {
+    gap: 0.4rem;
+  }
+
+  .feed-filter-chip {
+    height: 24px;
+    padding: 0 0.7rem;
+    font-size: 0.7rem;
+  }
+
+  .feed-cards {
+    gap: 0.6rem;
+    padding-right: 0.2rem;
+  }
+
+  .feed-cards::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .feed-empty-state {
+    padding: 2rem 0.8rem;
+    gap: 0.4rem;
+  }
+
+  .feed-empty-icon {
+    font-size: 2rem;
+  }
+
+  .feed-empty-title {
+    font-size: 0.95rem;
+  }
+
+  .feed-empty-subtitle {
+    font-size: 0.75rem;
+    max-width: 240px;
+  }
+}
+
+/* ──────────────────────────────────────────────────────────────────────────────
+   Animation & Transitions
+   ────────────────────────────────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .feed-filter-chip,
+  .activity-feed-card,
+  .activity-badge {
+    transition: none;
+    animation: none;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Subtle stagger animation for cards */
+  .feed-cards .activity-feed-card:nth-child(1) { animation-delay: 0ms; }
+  .feed-cards .activity-feed-card:nth-child(2) { animation-delay: 40ms; }
+  .feed-cards .activity-feed-card:nth-child(3) { animation-delay: 80ms; }
+  .feed-cards .activity-feed-card:nth-child(4) { animation-delay: 120ms; }
+  .feed-cards .activity-feed-card:nth-child(5) { animation-delay: 160ms; }
+  .feed-cards .activity-feed-card:nth-child(n+6) { animation-delay: 200ms; }
+}

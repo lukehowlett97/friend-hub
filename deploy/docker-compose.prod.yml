@@ -1,0 +1,100 @@
+services:
+  caddy:
+    image: caddy:2-alpine
+    container_name: friend_hub_caddy
+    restart: unless-stopped
+    environment:
+      DOMAIN_NAME: ${DOMAIN_NAME}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - backend
+      - frontend
+    networks:
+      - friend_hub_network
+
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_GIPHY_API_KEY: ${VITE_GIPHY_API_KEY}
+    container_name: friend_hub_frontend
+    restart: unless-stopped
+    expose:
+      - "80"
+    networks:
+      - friend_hub_network
+
+  backend:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    container_name: friend_hub_backend
+    restart: unless-stopped
+    env_file:
+      - ../.env
+    expose:
+      - "8000"
+    volumes:
+      - uploads_data:/app/runtime/uploads
+      - /opt/friend-hub/exports:/app/exports
+      - /opt/friend-hub/imports:/app/imports
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8000/api/v1/health', timeout=5).read()\""]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    networks:
+      - friend_hub_network
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: friend_hub_ollama
+    restart: unless-stopped
+    volumes:
+      - ollama_data:/root/.ollama
+    expose:
+      - "11434"
+    networks:
+      - friend_hub_network
+
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: friend_hub_postgres
+    restart: unless-stopped
+    env_file:
+      - ../.env
+    environment:
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ../backend/migrations/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - friend_hub_network
+
+volumes:
+  postgres_data:
+  uploads_data:
+  ollama_data:
+  caddy_data:
+  caddy_config:
+
+networks:
+  friend_hub_network:
+    driver: bridge

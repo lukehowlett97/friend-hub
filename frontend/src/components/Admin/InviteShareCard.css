@@ -1,0 +1,73 @@
+.invite-share-card {
+  margin-top: 0.75rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--border-color, #d0d7de);
+  border-radius: 10px;
+  background: var(--surface-2, #f6f8fa);
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.invite-share-warning {
+  margin: 0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted, #57606a);
+}
+
+.invite-share-qr {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.6rem;
+  background: #fff;
+  border-radius: 8px;
+  align-self: flex-start;
+}
+
+.invite-share-qr span {
+  font-size: 0.75rem;
+  color: var(--text-muted, #57606a);
+}
+
+.invite-share-link {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+}
+
+.invite-share-link input {
+  flex: 1 1 12rem;
+  min-width: 0;
+  padding: 0.4rem 0.55rem;
+  border: 1px solid var(--border-color, #d0d7de);
+  border-radius: 6px;
+  font-family: ui-monospace, monospace;
+  font-size: 0.8rem;
+}
+
+.invite-share-link button {
+  padding: 0.4rem 0.7rem;
+  border: 1px solid var(--border-color, #d0d7de);
+  border-radius: 6px;
+  background: var(--surface-1, #fff);
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.invite-share-link button:hover {
+  background: var(--surface-2, #eef1f4);
+}
+
+.invite-share-code {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--text-muted, #57606a);
+}
+
+.invite-share-code code {
+  font-size: 0.82rem;
+}

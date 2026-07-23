@@ -1,0 +1,110 @@
+.reaction-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.reaction-modal {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.18);
+  width: 320px;
+  max-width: 90vw;
+  max-height: 480px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.reaction-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem 0.75rem;
+  border-bottom: 1px solid #f0f4f8;
+}
+
+.reaction-modal-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #172033;
+}
+
+.reaction-modal-close {
+  background: none;
+  border: none;
+  font-size: 0.85rem;
+  color: #9aa4b2;
+  cursor: pointer;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  line-height: 1;
+  transition: background 0.12s;
+}
+.reaction-modal-close:hover { background: #f0f4f8; color: #415066; }
+
+.reaction-modal-tabs {
+  display: flex;
+  gap: 0.25rem;
+  padding: 0.6rem 1rem;
+  border-bottom: 1px solid #f0f4f8;
+  flex-wrap: wrap;
+}
+
+.reaction-tab {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.3rem 0.65rem;
+  border: 1px solid #e6ebf2;
+  border-radius: 999px;
+  background: #fff;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s;
+}
+.reaction-tab:hover { background: #f0f4f8; }
+.reaction-tab.active {
+  background: rgba(102, 126, 234, 0.12);
+  border-color: rgba(102, 126, 234, 0.4);
+}
+
+.reaction-tab-count {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #415066;
+}
+
+.reaction-modal-list {
+  list-style: none;
+  margin: 0;
+  padding: 0.5rem 0;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.reaction-modal-user {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.55rem 1.25rem;
+  transition: background 0.1s;
+}
+.reaction-modal-user.clickable { cursor: pointer; }
+.reaction-modal-user.clickable:hover { background: #f4f6f9; }
+
+.reaction-modal-nickname {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #172033;
+}
+
+.reaction-modal-empty {
+  padding: 1rem 1.25rem;
+  color: #9aa4b2;
+  font-size: 0.875rem;
+}

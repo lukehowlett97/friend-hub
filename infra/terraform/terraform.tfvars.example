@@ -1,0 +1,11 @@
+# Copy this file to terraform.tfvars and fill in real values.
+# Never commit terraform.tfvars. Keep app secrets in .env.prod instead.
+
+hcloud_token        = "paste-hetzner-cloud-api-token"
+project_name        = "friend-hub"
+environment         = "prod"
+server_type         = "cx22"
+location            = "hel1"
+domain_name         = "chat.example.com"
+ssh_public_key_path = "~/.ssh/id_ed25519.pub"
+allowed_ssh_ips     = ["203.0.113.10/32"]
