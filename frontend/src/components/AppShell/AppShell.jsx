@@ -47,6 +47,7 @@ function SidebarProfile({ currentPath, onNavigate }) {
 const AppShell = ({ currentPath, onNavigate, onSearch, children }) => {
   const [moreOpen, setMoreOpen] = useState(false);
   const { user } = useAuth();
+  const demoMode = isDemoMode() || user?.is_guest;
   const isChatRoute = currentPath === '/chat';
 
   const moreNavItems = user?.is_owner
