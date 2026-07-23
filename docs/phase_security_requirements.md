@@ -1,5 +1,9 @@
 # phase_security_requirements.md
 
+> **Document status:** this is a threat model and target-state hardening plan,
+> not a claim that every control below is implemented. See the README's
+> feature-status and known-limitations sections for the current public state.
+
 ## Overview
 
 This document defines the initial production security requirements and hardening plan for Friend Hub before wider beta onboarding, public signup, payments, or broader data ingestion.

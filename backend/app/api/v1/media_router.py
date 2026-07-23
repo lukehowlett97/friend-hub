@@ -92,14 +92,12 @@ async def _require_room_member_for_file(
     db: AsyncSession,
 ) -> None:
     """
-    If the file has a room_id, verify the user is a member of that room.
-    Files with no room_id (e.g. legacy imports) are accessible to any
-    authenticated user — they pre-date multi-room and have no isolation context.
+    Verify that the file has an owning room and that the user belongs to it.
+    Missing metadata is denied by default; migration 063 assigns legitimate
+    historical media to the original main room.
     """
-    if getattr(user, "user_type", None) == "guest" and room_id is None:
-        raise HTTPException(status_code=404)
     if room_id is None:
-        return
+        raise HTTPException(status_code=404)
     repo = RoomRepository(db)
     if not await repo.is_member(room_id, user.id):
         raise HTTPException(status_code=404)

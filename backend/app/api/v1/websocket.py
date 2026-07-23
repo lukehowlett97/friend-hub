@@ -51,7 +51,10 @@ async def websocket_endpoint(websocket: WebSocket, manager: ConnectionManager):
     # Accept first so we can send an error frame if auth fails.
     await websocket.accept()
 
-    token = websocket.query_params.get("token")
+    # Browsers send same-origin cookies during the WebSocket handshake. Prefer
+    # the HttpOnly session cookie so raw credentials never need JavaScript
+    # storage; retain the query parameter for non-browser API clients.
+    token = websocket.cookies.get("friend_hub_session") or websocket.query_params.get("token")
     room_slug = websocket.query_params.get("room") or None
     user = None
     room = None

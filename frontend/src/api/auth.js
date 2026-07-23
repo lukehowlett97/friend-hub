@@ -1,4 +1,4 @@
-import { apiFetch, setToken, setDemoToken, clearToken } from './client.js';
+import { apiFetch, setDemoMode, clearToken } from './client.js';
 
 export async function createDemoSession() {
   const res = await fetch('/api/v1/auth/demo-session', {
@@ -8,7 +8,7 @@ export async function createDemoSession() {
   });
   const data = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(data.detail || 'Demo is unavailable');
-  setDemoToken(data.token);
+  setDemoMode();
   return data.user;
 }
 
@@ -19,7 +19,6 @@ export async function register({ username, nickname, invite_code }) {
   });
   const data = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(data.detail || 'Registration failed');
-  setToken(data.token);
   return data.user;
 }
 
@@ -30,7 +29,6 @@ export async function claimInvite({ invite_code, pin, pin_confirm }) {
   });
   const data = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(data.detail || 'Invite claim failed');
-  if (data.token) setToken(data.token);
   return data.user;
 }
 
@@ -49,7 +47,6 @@ export async function pinLogin({ username, pin }) {
   });
   const data = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(data.detail || 'Login failed. Check your details and try again.');
-  if (data.token) setToken(data.token);
   return data.user;
 }
 

@@ -1,117 +1,140 @@
-# Friend Hub
+# Friend Hub — Private Group Platform
 
-Friend Hub is a self-hosted group chat and shared social hub for a small,
-trusted community. It combines real-time chat, rooms, events, photos,
-polls, reminders, notes, search, notifications, and optional AI-assisted
-features in one web application.
+[![CI](https://github.com/lukehowlett97/friend-hub/actions/workflows/ci.yml/badge.svg)](https://github.com/lukehowlett97/friend-hub/actions/workflows/ci.yml)
 
-> This project is under active development. It is suitable for personal or
-> small-group deployments; review the security and deployment documentation
-> before exposing an instance to the public internet.
+Friend Hub is a self-hosted social workspace for a small, trusted group: live
+chat, rooms, events, polls, reminders, notes, searchable history, media and
+notifications in one responsive PWA.
 
-## Stack
+**[Try the isolated public demo](https://techlett.duckdns.org/demo)** ·
+Temporary guest identity · Synthetic content · No private data
 
-- React and Vite frontend
-- FastAPI and WebSockets backend
-- PostgreSQL database
-- Docker Compose for local services
-- Terraform and Caddy deployment examples for a small VPS
+![Friend Hub public demo](docs/assets/friend-hub-demo.png)
+
+## Why it exists
+
+Group conversations scatter useful decisions, photos and plans across chat
+threads. Friend Hub keeps the immediacy of chat while giving durable group
+knowledge—events, reminders, polls, notes and search—a structured home that the
+group can operate itself.
+
+## Engineering highlights
+
+- Room-scoped REST, WebSocket and authenticated-media access with deny-by-default
+  handling for incomplete ownership metadata.
+- HttpOnly, Secure, SameSite session cookies; browser JavaScript never stores or
+  receives raw session credentials.
+- React/Vite PWA backed by FastAPI, PostgreSQL and real-time WebSockets.
+- Deterministic Messenger import tooling for messages, reactions and supported
+  media, with dry-run support and explicit local paths.
+- Optional background jobs for summaries, embeddings, reminders and push
+  notifications; application startup does not require local ML dependencies.
+- Docker Compose production topology, Caddy TLS and Terraform deployment
+  examples for a small VPS.
+
+## Architecture
+
+```mermaid
+flowchart LR
+    U[Browser / installed PWA] -->|HTTPS + WSS| C[Caddy]
+    C --> R[React static app]
+    C --> A[FastAPI REST + WebSockets]
+    A --> P[(PostgreSQL + optional pgvector)]
+    A --> M[Authenticated local media]
+    A -. optional jobs .-> W[Workers / schedulers]
+    W -. optional local AI .-> O[Ollama]
+```
+
+## Feature status
+
+### Implemented
+
+- Multi-room chat, presence and message history
+- Events, polls, reminders, ideas, notes and cross-feature search
+- Authenticated room-scoped photo, video and audio delivery
+- PIN/invite onboarding, administrative membership controls and guest demo
+- Web Push, PWA installation, Docker deployment and database migrations
+- Messenger archive importer with dry-run and idempotency coverage
+
+### Optional / experimental
+
+- Chat and image embeddings with semantic retrieval
+- AI summaries, Hub Bot tools and topic detection/refinement
+- Ollama, OpenRouter and image-generation integrations
+
+### Known limitations
+
+- This is a small-group platform, not a general public-signup service.
+- The security plan in `docs/phase_security_requirements.md` describes both
+  implemented controls and target-state work; it is not a certification.
+- Thirty-nine legacy assertions for the superseded AI draft-result contract are
+  explicitly skipped while their replacements are rewritten around the current
+  immediate-creation contract. The remaining backend suite runs in CI.
+- Operational backups, restore drills, monitoring and secret rotation remain the
+  responsibility of each self-hosted deployment.
 
 ## Quick start
 
 ### Prerequisites
 
 - Python 3.12+
-- Node.js 18+
+- Node.js 20+
 - Docker and Docker Compose
-- Poetry, or a Python virtual environment with the backend dependencies
-
-### Configure
-
-Copy the example environment files and replace the development values:
+- Poetry 2.x
 
 ```bash
 cp .env.example .env
 cp backend/.env.example backend/.env
-```
+# Replace all example credentials and secrets before continuing.
 
-Never commit either `.env` file. Keep production secrets outside the
-repository.
-
-### Run locally
-
-```bash
 make up
+make migrate
 make migrate-file FILE=061_add_public_demo_room.sql
+make migrate-file FILE=062_seed_demo_events_and_reminders.sql
+make migrate-file FILE=063_backfill_legacy_media_rooms.sql
 make backend
 make frontend
 ```
 
-The API runs on `http://localhost:8000` and the Vite development server runs
-on `http://localhost:5173`.
+The API runs at `http://localhost:8000`; Vite runs at
+`http://localhost:5173`. Open `http://localhost:5173/demo` for the local demo.
 
-Open `http://localhost:5173/demo` to try the public demo room. It creates a
-temporary display name and does not create an account.
-
-Useful commands:
+Validation:
 
 ```bash
 make test
-cd frontend && npm run build
+cd frontend && npm ci && npm run build
 ```
 
-## Import an existing Facebook Messenger chat
+## Import a Messenger archive
 
-Friend Hub includes a developer importer for bringing historical Facebook
-Messenger group chats into the normal Friend Hub chat history. It can import
-messages, participants, timestamps, reactions, links, and supported media from
-an extracted Facebook data export.
+The importer accepts an extracted Facebook Messenger export stored outside this
+repository. Configure neutral local values in your environment:
 
-1. Request and download your Facebook data export with Messenger messages
-   included.
-2. Extract the export somewhere outside this repository.
-3. Set `MESSENGER_EXPORT_ROOT`, `MESSENGER_CHAT_FOLDER`,
-   `MESSENGER_ROOM_ID`, and `MESSENGER_SENDER_MAP` in your local environment.
-4. Preview the import:
+```bash
+export MESSENGER_EXPORT_ROOT=/path/to/messenger-export
+export MESSENGER_CHAT_FOLDER=example-group
+export MESSENGER_ROOM_ID=main
+export MESSENGER_SENDER_MAP=/path/to/sender-map.txt
 
-   ```bash
-   make import-messenger-dry-run
-   ```
+make import-messenger-dry-run
+make import-messenger
+```
 
-5. Run the import when the preview is correct:
-
-   ```bash
-   make import-messenger
-   ```
-
-The detailed importer notes are in
+Keep exports, conversations and media out of version control. See
 [`docs/phase_messenger_importer.md`](docs/phase_messenger_importer.md).
-Messenger exports contain private conversations and media, so keep the export
-outside the repository, do not commit it, and run imports only on a trusted
-deployment.
 
-## Deployment
+## Deployment and security
 
-Deployment notes and a Terraform example for Hetzner Cloud are in
-[`docs/terraform-deployment.md`](docs/terraform-deployment.md). The
-production compose file and Caddy configuration are in [`deploy/`](deploy/).
+Production examples live in [`deploy/`](deploy/) and
+[`infra/terraform/`](infra/terraform/). Start with
+[`docs/terraform-deployment.md`](docs/terraform-deployment.md),
+[`docs/DEPLOYMENT_NOTES.md`](docs/DEPLOYMENT_NOTES.md) and the clearly labelled
+target-state [`security plan`](docs/phase_security_requirements.md).
 
-Read [`docs/phase_security_requirements.md`](docs/phase_security_requirements.md)
-and [`docs/DEPLOYMENT_NOTES.md`](docs/DEPLOYMENT_NOTES.md) before deploying.
-
-## Project documentation
-
-The [`docs/`](docs/) directory contains setup notes, operational guidance,
-feature plans, and the current roadmap. The project is intentionally
-incremental; some documents describe planned or experimental functionality.
-
-## Privacy and data
-
-Runtime uploads, databases, logs, backups, and environment files are local
-deployment data and are intentionally excluded from version control. Do not
-place private conversations, production exports, or user-uploaded media in
-the repository.
+Runtime uploads, databases, backups, logs and environment files are deployment
+data and are intentionally excluded from the repository. Never commit them.
 
 ## License
 
-This project is released under the MIT License; see [`LICENSE`](LICENSE).
+MIT — see [`LICENSE`](LICENSE).

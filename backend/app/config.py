@@ -56,8 +56,9 @@ class Settings(BaseSettings):
     image_embeddings_batch_size: int = 8
     image_embeddings_max_retries: int = 3
 
-    # Private beta auth. Override INVITE_CODE outside local development.
-    invite_code: str = "friend-hub-dev"
+    # Legacy private-beta registration code. Public signup is disabled, and
+    # production must opt in explicitly rather than inheriting a known code.
+    invite_code: str | None = None
 
     # Public base URL used to build shareable invite links (e.g. https://friendhub.chat).
     # No trailing slash. Override via APP_BASE_URL in production.

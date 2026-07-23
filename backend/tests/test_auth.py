@@ -149,7 +149,7 @@ class TestAuthEndpoints(unittest.TestCase):
 
         self.assertEqual(raised.exception.detail, AuthService.GENERIC_LOGIN_ERROR)
 
-    def test_claim_invite_returns_user_and_token(self):
+    def test_claim_invite_sets_cookie_without_exposing_token(self):
         async def fake_claim_invite(self, **kwargs):
             return TestAuthEndpoints._user(role="member"), "raw-token", None
 
@@ -168,11 +168,11 @@ class TestAuthEndpoints(unittest.TestCase):
         payload = response.model_dump()
 
         self.assertEqual(payload["user"]["username"], "luke")
-        self.assertEqual(payload["token"], "raw-token")
+        self.assertIsNone(payload["token"])
 
     def test_peek_invite_returns_display_name_for_valid_code(self):
         async def fake_peek_invite(self, invite_code):
-            return "Chat GBeanT", None
+            return {"display_name": "Chat GBeanT", "room": None}, None
 
         self._patch_method("peek_invite", fake_peek_invite)
 
@@ -230,11 +230,12 @@ class TestAuthEndpoints(unittest.TestCase):
         )
         router_module._current_owner_user_or_403 = fake_owner
         router_module._admin_user_response = fake_admin_user_response
-        router_module._invite_url = lambda code: f"http://test/join/{code}"
+        router_module._invite_url = lambda code, request=None: f"http://test/join/{code}"
         AuthService.create_admin_user = fake_create_admin_user
         try:
             response = asyncio.run(
                 admin_create_user(
+                    self._request(),
                     AdminUserCreateRequest(
                         display_name="Sarah",
                         username="sarah",

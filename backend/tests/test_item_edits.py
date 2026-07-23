@@ -147,8 +147,9 @@ class TestUpdatePollPermissions(_EditBaseTest):
     def test_non_creator_non_admin_rejected(self):
         creator_id = uuid.uuid4()
         other = _member()
-        router._current_user_or_401 = lambda authorization, db: _async(other)
+        router._current_user_or_401 = lambda authorization, db, session_cookie=None: _async(other)
         poll = Poll(
+            room_id=DEFAULT_ROOM_ID,
             id=1, group_id=1, question="q?",
             created_by_user_id=creator_id,
             deadline_at=datetime.utcnow() + timedelta(hours=1),
@@ -166,8 +167,9 @@ class TestUpdatePollPermissions(_EditBaseTest):
     def test_creator_can_edit(self):
         creator_id = uuid.uuid4()
         creator = _member(user_id=creator_id)
-        router._current_user_or_401 = lambda authorization, db: _async(creator)
+        router._current_user_or_401 = lambda authorization, db, session_cookie=None: _async(creator)
         poll = Poll(
+            room_id=DEFAULT_ROOM_ID,
             id=2, group_id=1, question="q?",
             created_by_user_id=creator_id,
             deadline_at=datetime.utcnow() + timedelta(hours=1),
@@ -186,8 +188,9 @@ class TestUpdatePollPermissions(_EditBaseTest):
     def test_admin_can_edit_other_users_poll(self):
         creator_id = uuid.uuid4()
         admin = _admin()  # different id
-        router._current_user_or_401 = lambda authorization, db: _async(admin)
+        router._current_user_or_401 = lambda authorization, db, session_cookie=None: _async(admin)
         poll = Poll(
+            room_id=DEFAULT_ROOM_ID,
             id=3, group_id=1, question="q?",
             created_by_user_id=creator_id,
             deadline_at=datetime.utcnow() + timedelta(hours=1),
@@ -206,7 +209,7 @@ class TestUpdatePollHistory(_EditBaseTest):
     def test_history_records_title_desc_tag_changes(self):
         creator_id = uuid.uuid4()
         creator = _member(user_id=creator_id)
-        router._current_user_or_401 = lambda authorization, db: _async(creator)
+        router._current_user_or_401 = lambda authorization, db, session_cookie=None: _async(creator)
 
         # Pretend an existing hub_item already had a title/body/tags
         async def _load_hub_item(db, item_type, source_id):
@@ -218,6 +221,7 @@ class TestUpdatePollHistory(_EditBaseTest):
         router._load_hub_item_for_source = _load_hub_item
 
         poll = Poll(
+            room_id=DEFAULT_ROOM_ID,
             id=4, group_id=1, question="q?",
             created_by_user_id=creator_id,
             source=POLL_SOURCE_CHAT_AGENDA,
@@ -247,9 +251,10 @@ class TestUpdatePollHistory(_EditBaseTest):
     def test_voting_close_must_be_after_open(self):
         creator_id = uuid.uuid4()
         creator = _member(user_id=creator_id)
-        router._current_user_or_401 = lambda authorization, db: _async(creator)
+        router._current_user_or_401 = lambda authorization, db, session_cookie=None: _async(creator)
         now = datetime.utcnow()
         poll = Poll(
+            room_id=DEFAULT_ROOM_ID,
             id=5, group_id=1, question="q?",
             created_by_user_id=creator_id,
             voting_opens_at=now,
@@ -276,8 +281,9 @@ class TestUpdateIdeaPermissions(_EditBaseTest):
     def test_member_can_change_status_only(self):
         creator_id = uuid.uuid4()
         other = _member()
-        router._current_user_or_401 = lambda authorization, db: _async(other)
+        router._current_user_or_401 = lambda authorization, db, session_cookie=None: _async(other)
         idea = Idea(
+            room_id=DEFAULT_ROOM_ID,
             id=1, group_id=1, title="t", description="d",
             category="general", status=IdeaStatus.maybe,
             created_by_user_id=creator_id,
@@ -295,8 +301,9 @@ class TestUpdateIdeaPermissions(_EditBaseTest):
     def test_member_cannot_change_title(self):
         creator_id = uuid.uuid4()
         other = _member()
-        router._current_user_or_401 = lambda authorization, db: _async(other)
+        router._current_user_or_401 = lambda authorization, db, session_cookie=None: _async(other)
         idea = Idea(
+            room_id=DEFAULT_ROOM_ID,
             id=2, group_id=1, title="t", description="d",
             category="general", status=IdeaStatus.maybe,
             created_by_user_id=creator_id,
@@ -314,8 +321,9 @@ class TestUpdateIdeaPermissions(_EditBaseTest):
     def test_creator_can_edit_tags(self):
         creator_id = uuid.uuid4()
         creator = _member(user_id=creator_id)
-        router._current_user_or_401 = lambda authorization, db: _async(creator)
+        router._current_user_or_401 = lambda authorization, db, session_cookie=None: _async(creator)
         idea = Idea(
+            room_id=DEFAULT_ROOM_ID,
             id=3, group_id=1, title="t", description="d",
             category="general", status=IdeaStatus.maybe,
             created_by_user_id=creator_id,

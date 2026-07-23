@@ -258,7 +258,7 @@ class TestProfileEndpoints(unittest.TestCase):
 
         original_current_user = router_module._current_user_or_401
 
-        async def fake_current_user(authorization, db):
+        async def fake_current_user(authorization, db, session_cookie=None):
             return FakeUser()
 
         router_module._current_user_or_401 = fake_current_user
@@ -297,7 +297,7 @@ class TestProfileEndpoints(unittest.TestCase):
 
         original_current_user = router_module._current_user_or_401
 
-        async def fake_current_user(authorization, db):
+        async def fake_current_user(authorization, db, session_cookie=None):
             return FakeUser()
 
         router_module._current_user_or_401 = fake_current_user

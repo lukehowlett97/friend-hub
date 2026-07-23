@@ -79,7 +79,7 @@ class TestHomeAppearanceEndpoints(unittest.TestCase):
         self.group = types.SimpleNamespace(id=1)
         self._original_user = router._current_user_or_401
         self._original_group = router._default_group
-        router._current_user_or_401 = lambda authorization, db: self._async(self.user)
+        router._current_user_or_401 = lambda authorization, db, session_cookie=None: self._async(self.user)
         router._default_group = lambda db: self._async(self.group)
 
     def tearDown(self):

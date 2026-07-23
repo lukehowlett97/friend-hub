@@ -187,6 +187,7 @@ run_sql_migration "048_add_chat_read_state.sql"
 run_sql_migration "049_add_memory_message_range.sql"
 run_sql_migration "052_add_chat_embeddings.sql"
 run_sql_migration "061_add_public_demo_room.sql"
+run_sql_migration "063_backfill_legacy_media_rooms.sql"
 
 echo "Deployment status:"
 docker compose --env-file .env -f "$COMPOSE_FILE" ps

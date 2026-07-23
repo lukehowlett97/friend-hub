@@ -6,12 +6,13 @@ from app.domains.chat.connection_manager import ConnectionManager
 
 
 class TestWebSocketAuthFlow(unittest.TestCase):
-    def test_frontend_uses_token_for_ws_connection(self):
-        """Frontend hook must pass the auth token as a query param when opening WS."""
+    def test_frontend_does_not_expose_token_in_ws_url(self):
+        """Browser WebSockets authenticate with the HttpOnly session cookie."""
         repo_root = Path(__file__).resolve().parents[2]
         hook_path = repo_root / "frontend" / "src" / "hooks" / "useWebSocket.jsx"
         content = hook_path.read_text(encoding="utf-8")
-        self.assertIn("/ws?token=", content)
+        self.assertNotIn("getToken", content)
+        self.assertNotIn("params.set('token'", content)
 
     def test_frontend_creates_ws_without_session_param(self):
         """createWebSocketConnection must not accept a session_id argument."""
@@ -27,6 +28,7 @@ class TestWebSocketAuthFlow(unittest.TestCase):
         source = inspect.getsource(websocket_module)
         self.assertIn("AuthService", source)
         self.assertIn("authenticate_token", source)
+        self.assertIn('websocket.cookies.get("friend_hub_session")', source)
 
     def test_websocket_module_rejects_missing_token(self):
         """websocket_endpoint must close with 4001 when no valid token is provided."""
