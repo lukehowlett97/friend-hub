@@ -1488,7 +1488,7 @@ async def create_demo_session(
     if error or not user or not token:
         raise HTTPException(status_code=503, detail=error or "Demo is unavailable")
     _set_auth_cookie(response, token, session_only=True)
-    return AuthResponse(user=AuthUserResponse(**user_payload(user)), token=token)
+    return AuthResponse(user=AuthUserResponse(**user_payload(user)), token=None)
 
 
 @router.post("/auth/claim-invite", response_model=AuthResponse)
@@ -1509,7 +1509,7 @@ async def claim_invite(
     if error or not user or not token:
         raise HTTPException(status_code=400, detail=error or "Invite claim failed")
     _set_auth_cookie(response, token)
-    return AuthResponse(user=AuthUserResponse(**user_payload(user)), token=token)
+    return AuthResponse(user=AuthUserResponse(**user_payload(user)), token=None)
 
 
 @router.get("/auth/invite/{invite_code}")
@@ -1545,7 +1545,7 @@ async def pin_login(
     if error or not user or not token:
         raise HTTPException(status_code=400, detail=error or AuthService.GENERIC_LOGIN_ERROR)
     _set_auth_cookie(response, token)
-    return AuthResponse(user=AuthUserResponse(**user_payload(user)), token=token)
+    return AuthResponse(user=AuthUserResponse(**user_payload(user)), token=None)
 
 @router.get("/auth/me", response_model=AuthResponse)
 async def get_current_user(
@@ -1945,10 +1945,11 @@ async def admin_update_identity_user(
 async def update_current_user(
     request: ProfileUpdateRequest,
     authorization: str | None = Header(default=None),
+    session_cookie: str | None = Cookie(default=None, alias=AUTH_COOKIE_NAME),
     db: AsyncSession = Depends(get_db_session),
 ):
     auth_service = AuthService(db)
-    user, error = await auth_service.update_nickname(_bearer_token(authorization), request.nickname)
+    user, error = await auth_service.update_nickname(_auth_token(authorization, session_cookie), request.nickname)
     if error or not user:
         status_code = 401 if error == "Authentication required" else 400
         raise HTTPException(status_code=status_code, detail=error or "Profile update failed")
@@ -1959,10 +1960,11 @@ async def update_current_user(
 async def upload_user_avatar(
     request: AvatarUploadRequest,
     authorization: str | None = Header(default=None),
+    session_cookie: str | None = Cookie(default=None, alias=AUTH_COOKIE_NAME),
     db: AsyncSession = Depends(get_db_session),
 ):
     settings = get_settings()
-    user = await _current_user_or_401(authorization, db)
+    user = await _current_user_or_401(authorization, db, session_cookie)
     data_url = request.data_url.strip()
     if not data_url.startswith("data:image/"):
         raise HTTPException(status_code=400, detail="Only image uploads are supported")
@@ -1997,9 +1999,10 @@ async def upload_user_avatar(
 @router.delete("/users/me/avatar")
 async def delete_user_avatar(
     authorization: str | None = Header(default=None),
+    session_cookie: str | None = Cookie(default=None, alias=AUTH_COOKIE_NAME),
     db: AsyncSession = Depends(get_db_session),
 ):
-    user = await _current_user_or_401(authorization, db)
+    user = await _current_user_or_401(authorization, db, session_cookie)
     if user.avatar_url:
         avatar_dir = get_photo_upload_path().parent / "avatars"
         filepath = avatar_dir / f"{user.id}.jpg"
@@ -2474,10 +2477,11 @@ async def update_member_role(
     session_id: str,
     request: RoleUpdateRequest,
     authorization: str | None = Header(default=None),
+    session_cookie: str | None = Cookie(default=None, alias=AUTH_COOKIE_NAME),
     db: AsyncSession = Depends(get_db_session),
 ):
     auth_service = AuthService(db)
-    requester, _ = await auth_service.authenticate_token(_bearer_token(authorization))
+    requester, _ = await _authenticate_request(auth_service, authorization, session_cookie)
     if not requester:
         raise HTTPException(status_code=401, detail="Authentication required")
 
@@ -2510,13 +2514,14 @@ async def update_member_profile(
     session_id: str,
     request: ProfileMetadataUpdateRequest,
     authorization: str | None = Header(default=None),
+    session_cookie: str | None = Cookie(default=None, alias=AUTH_COOKIE_NAME),
     db: AsyncSession = Depends(get_db_session),
 ):
     """Update member profile metadata. Permissions follow NicknameChangePolicy
     (Phase 1 default: self-edit, with admin/owner override)."""
     from app.domains.members.profile import ProfileError, ProfileUpdate
 
-    requester = await _current_user_or_401(authorization, db)
+    requester = await _current_user_or_401(authorization, db, session_cookie)
 
     update_in = ProfileUpdate(
         nickname=request.nickname,
@@ -3548,11 +3553,15 @@ async def _build_poll_card(
     }
 
 
-async def _current_user_optional(authorization: str | None, db: AsyncSession) -> User | None:
-    if not authorization:
+async def _current_user_optional(
+    authorization: str | None,
+    db: AsyncSession,
+    session_cookie: str | None = None,
+) -> User | None:
+    if not authorization and not session_cookie:
         return None
     try:
-        return await _current_user_or_401(authorization, db)
+        return await _current_user_or_401(authorization, db, session_cookie)
     except HTTPException:
         return None
 
@@ -3913,7 +3922,7 @@ async def list_live_agenda_motions(
         session_cookie=session_cookie,
         x_room_slug=x_room_slug,
     )
-    user = await _current_user_optional(authorization, db)
+    user = await _current_user_optional(authorization, db, session_cookie)
     rows = await db.execute(
         select(Poll)
         .where(
@@ -3953,7 +3962,7 @@ async def get_poll_card(
     poll = await db.get(Poll, poll_id)
     if not poll or poll.group_id != group.id or poll.room_id != room_id:
         raise HTTPException(status_code=404, detail="Poll not found")
-    user = await _current_user_optional(authorization, db)
+    user = await _current_user_optional(authorization, db, session_cookie)
     card = await _build_poll_card(db, poll, user.id if user else None)
     return {"card": card}
 
@@ -6524,9 +6533,10 @@ async def get_home_appearance(db: AsyncSession = Depends(get_db_session)):
 async def update_home_appearance(
     request: HomeAppearanceUpdateRequest,
     authorization: str | None = Header(default=None),
+    session_cookie: str | None = Cookie(default=None, alias=AUTH_COOKIE_NAME),
     db: AsyncSession = Depends(get_db_session),
 ):
-    user = await _current_user_or_401(authorization, db)
+    user = await _current_user_or_401(authorization, db, session_cookie)
     group = await _default_group(db)
     record = await _get_or_create_home_appearance(db, group.id)
 
@@ -6569,9 +6579,10 @@ async def update_home_appearance(
 async def set_home_appearance_cover(
     request: HomeAppearanceSetCoverRequest,
     authorization: str | None = Header(default=None),
+    session_cookie: str | None = Cookie(default=None, alias=AUTH_COOKIE_NAME),
     db: AsyncSession = Depends(get_db_session),
 ):
-    user = await _current_user_or_401(authorization, db)
+    user = await _current_user_or_401(authorization, db, session_cookie)
     group = await _default_group(db)
     photo = await db.get(Photo, request.photo_id)
     if photo is None:
@@ -6592,9 +6603,10 @@ async def set_home_appearance_cover(
 @router.delete("/home-appearance/cover")
 async def remove_home_appearance_cover(
     authorization: str | None = Header(default=None),
+    session_cookie: str | None = Cookie(default=None, alias=AUTH_COOKIE_NAME),
     db: AsyncSession = Depends(get_db_session),
 ):
-    user = await _current_user_or_401(authorization, db)
+    user = await _current_user_or_401(authorization, db, session_cookie)
     group = await _default_group(db)
     result = await db.execute(
         select(HomeAppearance).where(HomeAppearance.group_id == group.id)
@@ -6777,6 +6789,7 @@ async def create_push_subscription(
 async def delete_push_subscription(
     endpoint: str,
     authorization: str | None = Header(default=None),
+    session_cookie: str | None = Cookie(default=None, alias=AUTH_COOKIE_NAME),
     db: AsyncSession = Depends(get_db_session),
 ):
     """Unregister a Web Push subscription for the current user.
@@ -6786,7 +6799,7 @@ async def delete_push_subscription(
     """
     from app.domains.notifications.push_repository import PushSubscriptionRepository
 
-    user = await _current_user_or_401(authorization, db)
+    user = await _current_user_or_401(authorization, db, session_cookie)
     repo = PushSubscriptionRepository(db)
     deleted = await repo.delete_for_user(user_id=user.id, endpoint=endpoint)
     if deleted == 0:
@@ -6797,13 +6810,14 @@ async def delete_push_subscription(
 @router.post("/push/test")
 async def send_test_push(
     authorization: str | None = Header(default=None),
+    session_cookie: str | None = Cookie(default=None, alias=AUTH_COOKIE_NAME),
     db: AsyncSession = Depends(get_db_session),
 ):
     """Send a test push to the current user's subscriptions. For diagnostics."""
     from app.domains.notifications.push_fanout import fanout_push_to_user
     from app.domains.notifications.push_repository import PushSubscriptionRepository
 
-    user = await _current_user_or_401(authorization, db)
+    user = await _current_user_or_401(authorization, db, session_cookie)
 
     subs = await PushSubscriptionRepository(db).list_for_user(user.id)
     if not subs:

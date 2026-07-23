@@ -14,16 +14,16 @@ TF          ?= terraform
 TF_DIR      ?= infra/terraform
 TF_ARGS     ?=
 MESSENGER_DATA_ROOT ?= importers/facebook_messenger/data
-FB_DATA_MAY_2026_SOURCE ?= /mnt/e/code/fb_data_may_2026
+FB_DATA_MAY_2026_SOURCE ?= /path/to/messenger-export
 MESSENGER_EXPORT_ROOT ?= $(MESSENGER_DATA_ROOT)
-MESSENGER_CHAT_FOLDER ?= nipscrips_may_2026
-MESSENGER_ROOM_ID ?= nips
-MESSENGER_SENDER_MAP ?= $(MESSENGER_DATA_ROOT)/sender_map_nips.txt
+MESSENGER_CHAT_FOLDER ?= example-group
+MESSENGER_ROOM_ID ?= main
+MESSENGER_SENDER_MAP ?= /path/to/sender-map.txt
 MESSENGER_IMPORT_ARGS ?=
 
 FETCH_SOURCE ?= $(FB_DATA_MAY_2026_SOURCE)
-FETCH_LABEL  ?= nipscripstheageofthebinman
-FETCH_OUTPUT ?= $(MESSENGER_DATA_ROOT)/nipscrips_may_2026
+FETCH_LABEL  ?= example-group
+FETCH_OUTPUT ?= $(MESSENGER_DATA_ROOT)/example-group
 FETCH_ARGS ?=
 
 HOST        ?= 127.0.0.1
@@ -246,7 +246,9 @@ connect:
 # ── Tests ────────────────────────────────────────────────────────────────────
 
 test: $(VENV)
-	cd backend && $(PYTHON) -m pytest tests/ -v
+	cd backend && for test_file in tests/test_*.py; do \
+		$(PYTHON) -m pytest -q "$$test_file" || exit 1; \
+	done
 
 # ── Clean ────────────────────────────────────────────────────────────────────
 

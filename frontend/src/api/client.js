@@ -1,31 +1,26 @@
 const TOKEN_KEY = 'friendHub.token';
 const ROOM_SLUG_KEY = 'friendHub.currentRoomSlug';
-const DEMO_TOKEN_KEY = 'friendHub.demoToken';
+const DEMO_MODE_KEY = 'friendHub.demoMode';
 const DEMO_ROOM_SLUG_KEY = 'friendHub.demoRoomSlug';
 
 export function isDemoMode() {
-  return window.sessionStorage.getItem(DEMO_TOKEN_KEY) !== null;
-}
-
-export function getToken() {
-  return window.sessionStorage.getItem(DEMO_TOKEN_KEY) || localStorage.getItem(TOKEN_KEY);
-}
-
-export function setToken(token) {
-  localStorage.setItem(TOKEN_KEY, token);
+  return window.sessionStorage.getItem(DEMO_MODE_KEY) === '1';
 }
 
 export function clearToken() {
+  // Remove credentials created by older releases. Authentication is now
+  // cookie-only, using the server's HttpOnly session cookie.
   localStorage.removeItem(TOKEN_KEY);
-  window.sessionStorage.removeItem(DEMO_TOKEN_KEY);
+  window.sessionStorage.removeItem('friendHub.demoToken');
 }
 
-export function setDemoToken(token) {
-  if (token) window.sessionStorage.setItem(DEMO_TOKEN_KEY, token);
+export function setDemoMode() {
+  window.sessionStorage.setItem(DEMO_MODE_KEY, '1');
 }
 
 export function clearDemoSession() {
-  window.sessionStorage.removeItem(DEMO_TOKEN_KEY);
+  window.sessionStorage.removeItem(DEMO_MODE_KEY);
+  window.sessionStorage.removeItem('friendHub.demoToken');
   window.sessionStorage.removeItem(DEMO_ROOM_SLUG_KEY);
 }
 
@@ -57,13 +52,12 @@ export function currentRoomHeaders() {
 }
 
 export async function apiFetch(path, options = {}) {
-  const token = getToken();
+  clearToken();
   const response = await fetch(path, {
     ...options,
     credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...currentRoomHeaders(),
       ...(options.headers || {}),
     },

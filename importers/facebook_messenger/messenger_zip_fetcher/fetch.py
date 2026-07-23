@@ -7,17 +7,11 @@ merges message JSON files across zips (deduplicating by timestamp_ms),
 and copies media files to --output.
 
 Usage:
-    python fetch.py --source /mnt/c/.../New --label nipscrips --output ../data/nipscrips
-    python fetch.py --source /mnt/c/.../New --label nipscrips --output ../data/nipscrips --dry-run
+    python fetch.py --source /path/to/export-zips --label example-group --output ../data/example-group
+    python fetch.py --source /path/to/export-zips --label example-group --output ../data/example-group --dry-run
     python fetch.py ... --max-messages 10000 --max-photos 50 --max-gifs 50
 
-Luke's FB export zips:
-    --source "/mnt/c/Users/lukeh/MyStuff/CodeProjects/Projects/FbApps/Archive/New"
-
-Known chat labels:
-    nipscrips          → nipscrips_3103416529741799         (Nips & Crips)
-    pics_test          → already fetched, in data/pics_test (Nips & Crips variant)
-    technicalwizards   → technicalwizardsts3cstevensdevronnine_298065113685641
+Labels are the neutral folder prefix before Facebook's generated numeric suffix.
 """
 
 import argparse
@@ -121,7 +115,7 @@ def write_message_files(chunks: list[list[dict]], output: Path, dry_run: bool, m
 def main():
     parser = argparse.ArgumentParser(description="Extract labelled Messenger inbox from FB export zips")
     parser.add_argument("--source", required=True, help="Directory containing .zip files")
-    parser.add_argument("--label", help="Inbox folder label prefix (e.g. nipscrips)")
+    parser.add_argument("--label", help="Inbox folder label prefix (e.g. example-group)")
     parser.add_argument("--output", help="Destination directory")
     parser.add_argument("--max-messages", type=int, default=10_000, help="Max messages to extract (most recent)")
     parser.add_argument("--max-photos", type=int, default=50, help="Max photos to extract")

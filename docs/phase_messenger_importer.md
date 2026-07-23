@@ -96,7 +96,7 @@ Example:
 your_facebook_activity/
 messages/
 inbox/
-nipscrips_3103416529741799/
+example-group_1234567890/
 message_1.json
 message_2.json
 photos/
@@ -418,9 +418,9 @@ Example flow:
 
 friend-hub-import discover export.zip
 
-friend-hub-import preview nipscrips_3103416529741799
+friend-hub-import preview example-group_1234567890
 
-friend-hub-import import nipscrips_3103416529741799
+friend-hub-import import example-group_1234567890
 
 friend-hub-import enrich-images
 

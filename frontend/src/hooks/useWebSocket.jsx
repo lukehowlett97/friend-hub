@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { apiFetch, getCurrentRoomSlug, getToken } from '../api/client.js';
+import { apiFetch, getCurrentRoomSlug } from '../api/client.js';
 
 const getApiBase = () => window.location.origin;
 
@@ -257,14 +257,7 @@ const useWebSocket = () => {
     if (wsRef.current) wsRef.current.close();
     clearReconnectTimeout();
 
-    const token = getToken();
-    if (!token) {
-      setConnectionError('Not authenticated');
-      setIsConnecting(false);
-      return;
-    }
-
-    const params = new URLSearchParams({ token });
+    const params = new URLSearchParams();
     const roomSlug = getCurrentRoomSlug();
     if (roomSlug) params.set('room', roomSlug);
     const ws = new WebSocket(`${getWsBase()}/ws?${params.toString()}`);
