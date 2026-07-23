@@ -22,6 +22,7 @@ class StartupErrorBoundary extends React.Component {
         <main className="startup-state" role="alert">
           <h1>Friend Hub could not start</h1>
           <p>Refresh the page and try again. If this continues, please let us know.</p>
+          <code>{this.state.error?.message || 'Unknown client error'}</code>
         </main>
       );
     }
