@@ -41,6 +41,7 @@ def _make_user(session_id=None, user_id=None):
     u.avatar_url = None
     u.avatar_emoji = None
     u.display_role = None
+    u.role = "member"
     return u
 
 
@@ -294,6 +295,7 @@ class TestMessageHandlerRoomId(unittest.TestCase):
         conn_manager.get_user = MagicMock(return_value=user)
         conn_manager.get_room = MagicMock(return_value=room)
         conn_manager.broadcast = AsyncMock()
+        conn_manager.broadcast_to_room = AsyncMock()
         handler = WebSocketMessageHandler(conn_manager)
         return handler, user
 
@@ -307,7 +309,10 @@ class TestMessageHandlerRoomId(unittest.TestCase):
         with patch(
             "app.services.chat_service.ChatService.save_message",
             new=AsyncMock(return_value=(fake_msg, user.nickname, None)),
-        ) as mock_save:
+        ) as mock_save, patch(
+            "app.domains.chat.message_handler._push_chat_notifications",
+            new=AsyncMock(),
+        ):
             asyncio.run(
                 handler._handle_chat_message(
                     {"content": "hello", "reply_to_id": None},
@@ -329,7 +334,10 @@ class TestMessageHandlerRoomId(unittest.TestCase):
         with patch(
             "app.services.chat_service.ChatService.save_message",
             new=AsyncMock(return_value=(fake_msg, user.nickname, None)),
-        ) as mock_save:
+        ) as mock_save, patch(
+            "app.domains.chat.message_handler._push_chat_notifications",
+            new=AsyncMock(),
+        ):
             asyncio.run(
                 handler._handle_chat_message(
                     {"content": "hello"},

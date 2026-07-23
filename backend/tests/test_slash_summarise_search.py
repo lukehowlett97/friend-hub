@@ -371,7 +371,7 @@ class TestHandleChatSearch(unittest.TestCase):
         self.assertIn("Please add a question", result.reply)
 
     def test_query_too_long_returns_error(self):
-        result = self._run(query="x" * 500)
+        result = self._run(query="x" * 501)
         self.assertIn("too long", result.reply)
 
     def test_no_results_returns_friendly_message(self):

@@ -70,7 +70,7 @@ class TestMessageHistoryEndpoint(unittest.TestCase):
 
 class TestMembersEndpoint(unittest.TestCase):
     def test_members_endpoint_returns_roles_and_online_state(self):
-        async def fake_get_members(self):
+        async def fake_get_members(self, **kwargs):
             return [
                 {
                     "session_id": "session-1",
@@ -83,20 +83,36 @@ class TestMembersEndpoint(unittest.TestCase):
                 }
             ]
 
+        async def fake_get_unlinked(self, **kwargs):
+            return []
+
         from app.domains.members.service import MemberService
+        from app.api.v1 import router
 
         original_get_members = MemberService.get_members
+        original_get_unlinked = MemberService.get_unlinked_imported_members
+        original_current_user = router._current_user_or_401
         MemberService.get_members = fake_get_members
+        MemberService.get_unlinked_imported_members = fake_get_unlinked
+        router._current_user_or_401 = lambda *args, **kwargs: _async(types.SimpleNamespace(id=uuid.uuid4()))
         try:
             class DummySession:
                 pass
 
-            response = asyncio.run(get_members(db=DummySession(), manager=None))
+            response = asyncio.run(get_members(
+                authorization="Bearer test",
+                session_cookie=None,
+                x_room_slug=None,
+                db=DummySession(),
+                manager=None,
+            ))
             payload = response.model_dump()
             self.assertEqual(payload["members"][0]["role"], "owner")
             self.assertTrue(payload["members"][0]["is_online"])
         finally:
             MemberService.get_members = original_get_members
+            MemberService.get_unlinked_imported_members = original_get_unlinked
+            router._current_user_or_401 = original_current_user
 
 
 class TestEventEndpointHelpers(unittest.TestCase):

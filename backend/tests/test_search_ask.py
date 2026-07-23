@@ -108,7 +108,7 @@ class TestSearchAskFrontendArtifacts(unittest.TestCase):
 
         self.assertIn("SearchBotChat", search_page)
         self.assertIn("search-submit-btn--ai", search_page)
-        self.assertIn("search-primary-action", search_page)
+        self.assertIn("search-mode-selector", search_page)
         self.assertIn("/api/v1/ai/hub-bot-chat", search_page)
         self.assertIn("askMessages", search_page)
         self.assertIn("sendAskQuestion", search_page)

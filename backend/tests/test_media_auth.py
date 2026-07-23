@@ -28,7 +28,7 @@ from app.api.v1 import media_router as mr
 # ── Async helpers ─────────────────────────────────────────────────────────────
 
 def run(coro):
-    return asyncio.get_event_loop().run_until_complete(coro)
+    return asyncio.run(coro)
 
 
 def _async(value):
@@ -103,11 +103,12 @@ class TestSafeFilePath(unittest.TestCase):
 # ── _require_room_member_for_file ─────────────────────────────────────────────
 
 class TestRequireRoomMemberForFile(unittest.TestCase):
-    def test_no_room_id_allows_any_authenticated_user(self):
+    def test_no_room_id_is_denied_by_default(self):
         user = _user()
         db = _FakeDb()
-        # Should not raise
-        run(mr._require_room_member_for_file(user, None, db))
+        with self.assertRaises(HTTPException) as ctx:
+            run(mr._require_room_member_for_file(user, None, db))
+        self.assertEqual(ctx.exception.status_code, 404)
 
     def test_member_of_room_is_allowed(self):
         user = _user()

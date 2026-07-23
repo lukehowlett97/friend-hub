@@ -101,7 +101,7 @@ class TestHubItemEndpoints(unittest.TestCase):
         self.group = types.SimpleNamespace(id=1)
         router._current_user_or_401 = lambda authorization, db, session_cookie=None: self._async(self.user)
         router._default_group = lambda db: self._async(self.group)
-        router._next_hub_item_sequence = lambda db, item_type: self._async(3)
+        router._next_hub_item_sequence = lambda db, item_type, room_id=None: self._async(3)
         router._request_room_id = lambda db, **kwargs: self._async(DEFAULT_ROOM_ID)
 
     def tearDown(self):

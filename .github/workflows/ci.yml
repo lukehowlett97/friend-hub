@@ -37,5 +37,12 @@ jobs:
       - run: python -m pip install poetry==2.1.3
       - run: poetry install --no-root
         working-directory: backend
-      - run: poetry run pytest -q
+      # Several legacy unittest modules patch process-wide singletons. Running
+      # each module in a fresh process prevents order-dependent leakage while
+      # preserving every collected test and a failing exit status.
+      - name: Run backend test modules in isolation
+        run: |
+          for test_file in tests/test_*.py; do
+            poetry run pytest -q "$test_file" || exit 1
+          done
         working-directory: backend

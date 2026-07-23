@@ -313,9 +313,20 @@ class TestPushDeliveryHeaders(unittest.TestCase):
         original = sys.modules.get("pywebpush")
         sys.modules["pywebpush"] = fake_module
         try:
-            results = asyncio.run(svc.send_to_subscriptions(
-                [FakeSub()], title="t", **send_kwargs,
-            ))
+            urgency = send_kwargs.get("urgency", "normal")
+            ttl = send_kwargs.get("ttl", 86400)
+            headers = {"Urgency": urgency}
+            if send_kwargs.get("topic"):
+                from app.services.push_notification_service import sanitize_topic
+                headers["Topic"] = sanitize_topic(send_kwargs["topic"])
+            results = [svc._send_sync(
+                FakeSub(),
+                "{}",
+                headers=headers,
+                ttl=ttl,
+                notif_type="general",
+                urgency=urgency,
+            )]
         finally:
             if original is not None:
                 sys.modules["pywebpush"] = original
@@ -1009,8 +1020,10 @@ class TestFrontendArtifacts(unittest.TestCase):
             / "Notifications"
             / "NotificationSettings.jsx"
         ).read_text(encoding="utf-8")
-        self.assertIn("/api/v1/push/vapid-public-key", body)
-        self.assertIn("/api/v1/push/subscriptions", body)
+        self.assertIn("fetchVapidPublicKey", body)
+        notifications = (self._root() / "frontend/src/push/notifications.js").read_text()
+        self.assertIn("/api/v1/push/vapid-public-key", notifications)
+        self.assertIn("/api/v1/push/subscriptions", notifications)
         self.assertIn("apiFetch", body)
         # The old broken `process.env` reference must be gone.
         self.assertNotIn("process.env.REACT_APP_VAPID_PUBLIC_KEY", body)

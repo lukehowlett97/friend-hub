@@ -784,7 +784,7 @@ class TestGetPollCardEndpoint(unittest.TestCase):
         self.original_build_card = router._build_poll_card
         self.group = types.SimpleNamespace(id=1)
         router._default_group = lambda db: _async(self.group)
-        router._current_user_optional = lambda authorization, db: _async(None)
+        router._current_user_optional = lambda authorization, db, session_cookie=None: _async(None)
         router._request_room_id = lambda *args, **kwargs: _async(None)
 
     def tearDown(self):
@@ -828,7 +828,7 @@ class TestLiveAgendaEndpoint(unittest.TestCase):
         self.original_build_card = router._build_poll_card
         self.group = types.SimpleNamespace(id=1)
         router._default_group = lambda db: _async(self.group)
-        router._current_user_optional = lambda authorization, db: _async(None)
+        router._current_user_optional = lambda authorization, db, session_cookie=None: _async(None)
         router._request_room_id = lambda *args, **kwargs: _async(None)
 
         async def _fake_card(db, poll, user_id):
