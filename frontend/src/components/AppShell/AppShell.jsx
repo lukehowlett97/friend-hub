@@ -139,8 +139,8 @@ const AppShell = ({ currentPath, onNavigate, onSearch, children }) => {
 
         <div className="app-sidebar-footer">
           {demoMode && <div className="demo-session-notice">You’re chatting as {user.nickname}. This temporary demo session does not create an account.</div>}
-          <SidebarProfile currentPath={currentPath} onNavigate={onNavigate} />
-          <NotificationBell onNavigate={onNavigate} />
+          {!demoMode && <SidebarProfile currentPath={currentPath} onNavigate={onNavigate} />}
+          {!demoMode && <NotificationBell onNavigate={onNavigate} />}
         </div>
       </aside>
 
