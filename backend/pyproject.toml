@@ -20,8 +20,6 @@ pydantic-settings = "^2.0.3"
 pillow = "^11.0.0"
 ffmpeg-python = "^0.2.0"
 pywebpush = "^1.14.0"
-torch = "*"
-open-clip-torch = "*"
 
 
 [build-system]
