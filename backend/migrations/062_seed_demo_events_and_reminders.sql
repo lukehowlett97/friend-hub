@@ -89,9 +89,9 @@ BEGIN
     );
 
     reminder_key := NULL;
-    INSERT INTO reminders (group_id, room_id, text, context, due_at, created_by_user_id, linked_event_id)
+    INSERT INTO reminders (group_id, room_id, text, context, due_at, created_by_user_id, linked_event_id, is_completed, created_at, updated_at)
     SELECT group_key, demo_room, 'Pack a picnic blanket', 'Sample demo reminder', now() + interval '1 day', demo_user,
-           (SELECT id FROM events WHERE room_id = demo_room AND title = '[Demo] Community Picnic' LIMIT 1)
+           (SELECT id FROM events WHERE room_id = demo_room AND title = '[Demo] Community Picnic' LIMIT 1), FALSE, now(), now()
     WHERE NOT EXISTS (
         SELECT 1 FROM reminders WHERE room_id = demo_room AND text = 'Pack a picnic blanket'
     )
@@ -110,8 +110,8 @@ BEGIN
     );
 
     reminder_key := NULL;
-    INSERT INTO reminders (group_id, room_id, text, context, due_at, created_by_user_id)
-    SELECT group_key, demo_room, 'Choose a game to bring', 'Sample demo reminder', now() + interval '4 days', demo_user
+    INSERT INTO reminders (group_id, room_id, text, context, due_at, created_by_user_id, is_completed, created_at, updated_at)
+    SELECT group_key, demo_room, 'Choose a game to bring', 'Sample demo reminder', now() + interval '4 days', demo_user, FALSE, now(), now()
     WHERE NOT EXISTS (
         SELECT 1 FROM reminders WHERE room_id = demo_room AND text = 'Choose a game to bring'
     )
@@ -130,8 +130,8 @@ BEGIN
     );
 
     reminder_key := NULL;
-    INSERT INTO reminders (group_id, room_id, text, context, due_at, created_by_user_id)
-    SELECT group_key, demo_room, 'Charge your camera', 'Sample demo reminder', now() + interval '8 days', demo_user
+    INSERT INTO reminders (group_id, room_id, text, context, due_at, created_by_user_id, is_completed, created_at, updated_at)
+    SELECT group_key, demo_room, 'Charge your camera', 'Sample demo reminder', now() + interval '8 days', demo_user, FALSE, now(), now()
     WHERE NOT EXISTS (
         SELECT 1 FROM reminders WHERE room_id = demo_room AND text = 'Charge your camera'
     )
