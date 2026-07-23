@@ -1,5 +1,7 @@
 # Friend Hub — Private Group Platform
 
+[![CI](https://github.com/lukehowlett97/friend-hub/actions/workflows/ci.yml/badge.svg)](https://github.com/lukehowlett97/friend-hub/actions/workflows/ci.yml)
+
 Friend Hub is a self-hosted social workspace for a small, trusted group: live
 chat, rooms, events, polls, reminders, notes, searchable history, media and
 notifications in one responsive PWA.
