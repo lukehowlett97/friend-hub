@@ -56,6 +56,36 @@ make test
 cd frontend && npm run build
 ```
 
+## Import an existing Facebook Messenger chat
+
+Friend Hub includes a developer importer for bringing historical Facebook
+Messenger group chats into the normal Friend Hub chat history. It can import
+messages, participants, timestamps, reactions, links, and supported media from
+an extracted Facebook data export.
+
+1. Request and download your Facebook data export with Messenger messages
+   included.
+2. Extract the export somewhere outside this repository.
+3. Set `MESSENGER_EXPORT_ROOT`, `MESSENGER_CHAT_FOLDER`,
+   `MESSENGER_ROOM_ID`, and `MESSENGER_SENDER_MAP` in your local environment.
+4. Preview the import:
+
+   ```bash
+   make import-messenger-dry-run
+   ```
+
+5. Run the import when the preview is correct:
+
+   ```bash
+   make import-messenger
+   ```
+
+The detailed importer notes are in
+[`docs/phase_messenger_importer.md`](docs/phase_messenger_importer.md).
+Messenger exports contain private conversations and media, so keep the export
+outside the repository, do not commit it, and run imports only on a trusted
+deployment.
+
 ## Deployment
 
 Deployment notes and a Terraform example for Hetzner Cloud are in
